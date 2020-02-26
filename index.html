@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Asankhaya Sharma" />
+  <meta name="author" content="Darius Foo" />
+  <meta name="author" content="Hendy Chua" />
+  <meta name="author" content="Jason Yeo" />
+  <meta name="author" content="Andrew Santosa" />
+  <meta name="author" content="Jonah Dela Cruz" />
+  <title>Test Lean and Ship Healthy: A Handbook on Delivering High Quality Software in the DevOps World</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style>
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Test Lean and Ship Healthy: A Handbook on Delivering High Quality Software in the DevOps World</h1>
+<p class="author">Asankhaya Sharma</p>
+<p class="author">Darius Foo</p>
+<p class="author">Hendy Chua</p>
+<p class="author">Jason Yeo</p>
+<p class="author">Andrew Santosa</p>
+<p class="author">Jonah Dela Cruz</p>
+</header>
+<h2 id="toctitle">Table of Contents</h2>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#beyond-unit-tests-automated-test-case-generation">Beyond Unit Tests: Automated Test Case Generation</a></li>
+<li><a href="#beyond-unit-tests-property-based-testing">Beyond Unit Tests: Property-based Testing</a>
+<ul>
+<li><a href="#expressing-program-behaviours">Expressing Program Behaviours</a></li>
+<li><a href="#checking-informal-specifications">Checking Informal Specifications</a></li>
+</ul></li>
+<li><a href="#gramtest-a-tool-for-grammar-based-test-case-generation">GramTest: a tool for grammar-based test case generation</a>
+<ul>
+<li><a href="#context-free-grammar">Context-free grammar</a></li>
+<li><a href="#gramtest">Gramtest</a></li>
+<li><a href="#implementation">Implementation</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#practical-tips">Practical Tips</a></li>
+<li><a href="#continuous-fuzzing-of-java-projects-with-gramtest">Continuous fuzzing of Java projects with GramTest</a></li>
+</ul></li>
+<li><a href="#execute-your-user-stories">Execute Your User Stories!</a>
+<ul>
+<li><a href="#lets-build-something">Let’s build something!</a></li>
+<li><a href="#what-can-we-do-about-it">What can we do about it?</a></li>
+<li><a href="#example-of-a-feature-specificaton">Example of a feature specificaton</a></li>
+<li><a href="#executable-user-stories">Executable user stories</a></li>
+<li><a href="#closing-thoughts">Closing thoughts</a></li>
+</ul></li>
+<li><a href="#where-is-my-cassette-mocking-system-testing-using-capture-and-replay">Where is My Cassette? Mocking System Testing using Capture and Replay</a>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#testing-objectives">Testing Objectives</a></li>
+<li><a href="#capture-and-replay">Capture and Replay</a></li>
+<li><a href="#afterthoughts">Afterthoughts</a></li>
+</ul></li>
+<li><a href="#contract-testing-with-pact">Contract testing with Pact</a>
+<ul>
+<li><a href="#what-is-contract-testing">What is Contract Testing?</a></li>
+<li><a href="#contract-testing-in-veracode">Contract Testing in Veracode</a></li>
+<li><a href="#what-we-like-and-dont-like-about-contract-testing">What we like and don’t like about Contract Testing</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul></li>
+<li><a href="#proof-pearl-on-the-correctness-of-update-advisor">Proof Pearl: On the Correctness of Update Advisor</a>
+<ul>
+<li><a href="#motivation">Motivation</a></li>
+<li><a href="#composing-diffs">Composing Diffs</a></li>
+<li><a href="#a-closer-look">A Closer Look</a></li>
+<li><a href="#conflating-u-and-m">Conflating U and M</a></li>
+<li><a href="#final-thoughts">Final Thoughts</a></li>
+</ul></li>
+<li><a href="#dynamic-symbolic-execution-with-pathgrind">Dynamic Symbolic Execution with Pathgrind</a></li>
+<li><a href="#efda-a-benchmark-for-software-composition-analysis-tools">EFDA: a benchmark for software composition analysis tools</a>
+<ul>
+<li><a href="#open-sourcing-efda">Open-Sourcing EFDA</a></li>
+<li><a href="#our-guiding-principles">Our Guiding Principles</a></li>
+<li><a href="#contributions">Contributions</a></li>
+</ul></li>
+<li><a href="#e2e-with-cypress">E2E with Cypress</a>
+<ul>
+<li><a href="#why-cypress">Why Cypress?</a></li>
+<li><a href="#organizing-tests">Organizing tests</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="beyond-unit-tests-automated-test-case-generation">Beyond Unit Tests: Automated Test Case Generation</h1>
+<p>Unit testing is an important aspect of software development. Having a proper test suite for your project can help detect bugs early and prevent regressions. Wouldn’t it be great if we could generate unit test cases automatically? Well, it is certainly possible and I will explain in this article how you can do so for Java.</p>
+<p>Recently, I had a chance to look at unit test case generation for Java. I had forked an old cross platform serialization library <a href="https://github.com/codelion/wox">wox</a> and it did not come with a test suite. I had to make a few changes and fix some bugs in the library to make it work with the current version of Java platform. I wanted to ensure that the changes I made did not break any existing functionality. Since the wox library did not come with its own set of test cases it was difficult to check that no regression bugs were introduced.</p>
+<p>After searching online, I found an automated test suite generation framework for Java - <a href="http://www.evosuite.org/">EvoSuite</a>. The EvoSuite framework automatically generates test cases for Java classes based on maximizing a coverage criteria, like branch coverage. I used their standalone jar to add a test suite to the wox library. It was surprisingly easy to set up and use.</p>
+<p>In order to generate the test suite we use the following command :</p>
+<pre><code>java -jar evosuite.jar -generateTests &lt;target&gt; [options]</code></pre>
+<p>The <strong>&lt;target&gt;</strong> can be either a jar file of a folder containing your class files. This would generate the test cases in a folder named “evosuite-tests” in the current directory. The test cases generated use JUnit and can be run separately from an IDE as well. The <strong>[options]</strong> control various parameters including coverage criteria, the default criteria is branch coverage. Thus the generated tests cover all the branches in the methods. If you are using some external library then make sure that it is available in the class path otherwise EvoSuite will not be able to create test cases with objects that are defined in that library. This is because to create objects during generation of test cases EvoSuite needs to call appropriate constructors for those objects.</p>
+<p>For test case generation, EvoSuite has a bunch of different strategies including <em>search-based</em> and <em>constraint-based</em> algorithms.</p>
+<ul>
+<li><p><em>Search Based Test Generation</em> : Uses a <a href="http://en.wikipedia.org/wiki/Genetic_algorithm">genetic algorithm</a> to evolve the population of candidate test cases that satisfy a particular fitness function</p></li>
+<li><p><em>Constraint Based Test Generation</em> : Uses <a href="http://en.wikipedia.org/wiki/Symbolic_execution">symbolic execution</a> to generate constraints and solve those constraints to explore different paths in the program.</p></li>
+</ul>
+<p>Their <a href="http://www.evosuite.org/wp-content/papercite-data/pdf/ase11.pdf">ASE 2011 paper</a> explains both the above techniques and how they can be combined and used together.</p>
+<p>In terms of the quality of the automated generated test cases, it seems to do a good job of capturing the current behavior of the methods while providing good branch coverage. As an example consider the following method from the <strong>wox.serial.Util</strong> class :</p>
+<pre><code> /**
+     * Returns true if the class which name is passed as parameter is &lt;i&gt;stringable&lt;/i&gt;.
+     * In other words, returns true if objects of the class can go easily to a string
+     * representation.
+     * @param name The name of the class to test.
+     * @return True if the class is stringable. False otherwise.
+     */
+    public static boolean stringable(String name) {
+        try {
+            Class realDataType = (Class)TypeMapping.mapWOXToJava.get(name);
+            //if the data type was found in the mapWOXToJava then it is &quot;stringable&quot;
+            if (realDataType!=null){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch(Exception e) {
+            return false;
+        }
+    }</code></pre>
+<p>The <strong>stringable</strong> method has two branches that correspond to whether the input <strong>name</strong> can be converted to a string by the <strong>mapWOXToJava.get</strong> method. EvoSuite generates the following two test cases for this method. <strong>test02</strong> covers the branch where the conditional is true whole <strong>test03</strong> covers the else branch. Also note that it is automatically able to create the inputs for <strong>name</strong> argument that drive the execution to the different branches.</p>
+<pre><code>  //Test case number: 2
+  /*
+   * 1 covered goal:
+   * 1 wox.serial.Util.stringable(Ljava/lang/String;)Z: I10 Branch 21 IFNULL L125 - false
+   */
+
+  @Test
+  public void test02()  throws Throwable  {
+      boolean boolean0 = Util.stringable(&quot;charWrapper&quot;);
+      assertEquals(true, boolean0);
+  }
+
+  //Test case number: 3
+  /*
+   * 1 covered goal:
+   * 1 wox.serial.Util.stringable(Ljava/lang/String;)Z: I10 Branch 21 IFNULL L125 - true
+   */
+
+  @Test
+  public void test03()  throws Throwable  {
+      boolean boolean0 = Util.stringable(&quot;2p8f2V@rzS&quot;);
+      assertEquals(false, boolean0);
+  }</code></pre>
+<p>You can have a look at the entire test suite generated for the wox library at the <a href="https://github.com/codelion/wox/tree/master/java/evosuite-tests/wox/serial">GitHub repo</a>. For the purpose of creating a regression test suite for a library that did not have one it seems to be quite effective. Now, if I make some changes in the wox library I can run the tests again and check if leads to any test failures. In general, automated test cases may not be as good as hand written ones. Another potential issue is the evolution of the test suite. Generating new tests with EvoSuite for each release may not be the right thing to do. Nevertheless the automated test suite can be used as a base for writing your own more comprehensive test cases, which is what I plan to do with the wox library.</p>
+<p>There are several other tools (under active development) for Java that also produce automated unit test cases. I haven’t had a chance to use them yet but I list them here for reference - <a href="https://github.com/ksen007/janala2">CATG</a>, <a href="http://code.google.com/p/randoop">Randoop</a> and <a href="http://babelfish.arc.nasa.gov/trac/jpf/wiki/projects/jpf-symbc">Symbolic Pathfinder</a>. An experience report, titled <a href="http://www.evosuite.org/wp-content/papercite-data/pdf/fittest2014.pdf">EvoSuite at the Second Unit Testing Tool Competition</a> provides more details on using EvoSuite and how it compares with other similar tools.</p>
+<h1 id="beyond-unit-tests-property-based-testing">Beyond Unit Tests: Property-based Testing</h1>
+<h2 id="expressing-program-behaviours">Expressing Program Behaviours</h2>
+<p>In a <a href="01-automated-test-case-generation.md">previous article</a>, we looked at the use of <a href="http://www.evosuite.org/">EvoSuite</a> framework for automated test case generation in Java. As mentioned in that article, EvoSuite uses <em>search-based</em> and <em>constraint-based</em> methods for generation of test cases. These methods are guided by coverage criteria (e.g. branch coverage) and ability to explore different paths in the program. The test cases generated by these methods may not capture the intended behavior of the program. In today’s article we will see how we can generate test cases that capture certain behaviors about programs. This can be done using <em>property-based</em> testing.</p>
+<p><a href="https://github.com/pholser/junit-quickcheck">JUnit-QuickCheck</a> is a library that provides <em>property-based</em> testing for Java programs. It is inspired by the <a href="http://en.wikipedia.org/wiki/QuickCheck">QuickCheck</a> library for Haskell that first pioneered this approach for automated testing. The library makes use of JUnit’s <a href="https://github.com/junit-team/junit/wiki/Theories">Theory</a> feature to support parameterized test cases. These test cases allow the developer to specify the property that the method under test should satisfy. JUnit-QuickCheck then uses randomly generated values to test the property. The following example shows how to use the <code>@Theory</code> annotation to specify a test method:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb4-1"><a href="#cb4-1"></a><span class="at">@RunWith</span>(Theories.<span class="fu">class</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">public</span> <span class="kw">class</span> PropertyJUnitTest {</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="at">@Theory</span> <span class="kw">public</span> <span class="dt">void</span> <span class="fu">testEncodeBase64</span>(<span class="at">@ForAll</span> <span class="dt">byte</span> [] src){</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    <span class="dt">byte</span> [] ec = EncodeBase64.<span class="fu">encode</span>(src);</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    <span class="dt">byte</span> [] dec = EncodeBase64.<span class="fu">decode</span>(ec);</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    Assert.<span class="fu">assertArrayEquals</span>(src,dec);</span>
+<span id="cb4-7"><a href="#cb4-7"></a>  }</span>
+<span id="cb4-8"><a href="#cb4-8"></a>}</span></code></pre></div>
+<p>This unit test is calling the <code>encode</code> and <code>decode</code> functions of the <code>EncodeBase64</code> class from the <a href="https://github.com/codelion/wox">wox cross platform serialization library</a>. The property of interest here is that <code>encode</code> is <a href="https://fsharpforfunandprofit.com/posts/property-based-testing-2/#there-and-back-again"><em>invertible</em></a>, with <code>decode</code> as its inverse, i.e. <code>x = decode(encode(x))</code>. In other words, we want to check that encoding a byte array and then decoding it back leads to the same byte array. The <code>assertArrayEquals</code> at the last line ensures that this property is satisfied. This property is tested by randomly generating a large number (100 by default) of byte arrays and calling the <code>testEncodeBase64</code> with those values as input. The <code>@ForAll</code> annotation is provided by the JUnit-QuickCheck library and takes care of generating the appropriate random inputs.</p>
+<p>If there are two inputs to the method, then all possible combinations of the randomly generated inputs are tested. In order to avoid running so many tests we can specify constraints on the input as shown below:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb5-1"><a href="#cb5-1"></a><span class="at">@Theory</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">testEncodeBase64withLength</span>(<span class="at">@ForAll</span> <span class="dt">byte</span> [] src) {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">assumeThat</span>(src.<span class="fu">length</span>, <span class="fu">greaterThan</span>(<span class="dv">32</span>)); </span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="dt">byte</span>[] ec = EncodeBase64.<span class="fu">encode</span>(src);</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="dt">byte</span>[] dec = EncodeBase64.<span class="fu">decode</span>(ec);</span>
+<span id="cb5-6"><a href="#cb5-6"></a>  Assert.<span class="fu">assertArrayEquals</span>(src,dec);</span>
+<span id="cb5-7"><a href="#cb5-7"></a>}</span></code></pre></div>
+<p>The <code>assumeThat</code> ensures that only byte arrays with length greater than 32 are generated. The library already comes with generators for all primitive Java types and there is also a separate module <code>junit-quickcheck-guava</code> containing generators for <a href="https://code.google.com/p/guava-libraries/">Guava</a> types. However, if we need to generate inputs of custom type we need to provide a generator. It can be done by extending the <code>Generator</code> class and overriding the <code>generate</code> method. The following example shows one possible way to generate random inputs of the <code>org.jdom2.Element</code> type.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">public</span> <span class="kw">class</span> ElementGenerator <span class="kw">extends</span> Generator&lt;<span class="bu">Element</span>&gt; {</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="kw">public</span> <span class="fu">ElementGenerator</span>() {</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    <span class="kw">super</span>(<span class="bu">Element</span>.<span class="fu">class</span>);</span>
+<span id="cb6-5"><a href="#cb6-5"></a>  }</span>
+<span id="cb6-6"><a href="#cb6-6"></a>  </span>
+<span id="cb6-7"><a href="#cb6-7"></a>  <span class="at">@Override</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>  <span class="kw">public</span> <span class="bu">Element</span> <span class="fu">generate</span>(SourceOfRandomness rand, GenerationStatus gs) {</span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="bu">Element</span> e = <span class="kw">new</span> <span class="bu">Element</span>(RandomStringUtils.<span class="fu">randomAlphabetic</span>(<span class="dv">16</span>));</span>
+<span id="cb6-10"><a href="#cb6-10"></a>    <span class="dt">int</span> numofAttr = rand.<span class="fu">nextInt</span>(<span class="dv">8</span>);</span>
+<span id="cb6-11"><a href="#cb6-11"></a>    <span class="kw">for</span>(<span class="dt">int</span> i=<span class="dv">0</span>; i&lt;numofAttr; i++) {</span>
+<span id="cb6-12"><a href="#cb6-12"></a>      e.<span class="fu">setAttribute</span>(RandomStringUtils.<span class="fu">randomAlphabetic</span>(<span class="dv">8</span>),RandomStringUtils.<span class="fu">randomAlphabetic</span>(<span class="dv">8</span>));</span>
+<span id="cb6-13"><a href="#cb6-13"></a>    }</span>
+<span id="cb6-14"><a href="#cb6-14"></a>    e.<span class="fu">addContent</span>(RandomStringUtils.<span class="fu">randomAlphabetic</span>(rand.<span class="fu">nextInt</span>(<span class="dv">16</span>)));</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    <span class="kw">return</span> e;</span>
+<span id="cb6-16"><a href="#cb6-16"></a>  }</span>
+<span id="cb6-17"><a href="#cb6-17"></a>}</span></code></pre></div>
+<p>Every time the <code>generate</code> method is called, it creates a random alphabetic string that is used as the name of the element and adds up to 8 random attribute values in it. To use this generator for the <code>Element</code> type we need to specify the class with the <code>@From</code> annotation after the <code>@Forall</code> in the test method as shown below:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1"></a><span class="at">@Theory</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">testElement2String</span>(</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="at">@ForAll</span> <span class="at">@From</span>(ElementGenerator.<span class="fu">class</span>) <span class="bu">Element</span> e)</span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="kw">throws</span> <span class="bu">Exception</span> {</span>
+<span id="cb7-5"><a href="#cb7-5"></a>  <span class="bu">String</span> s = <span class="fu">element2String</span>(e);</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="co">// ...</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>}</span></code></pre></div>
+<p>The use of custom generators allows us to use <em>property-based</em> testing for arbitrary classes and methods with little effort. The source code for all the tests is available under the <a href="https://github.com/codelion/wox/tree/master/java/src/test/java/wox/serial/tests">wox repository</a> on GitHub. In addition, some other frameworks (under active development) providing similar functionality for Java are <a href="https://bitbucket.org/blob79/quickcheck">Quickcheck</a> and <a href="http://www.scalacheck.org/">ScalaCheck</a>. However, JUnit-QuickCheck is the only one to use the Theory support in JUnit which makes it a lot easier to integrate in the development workflow.</p>
+<h2 id="checking-informal-specifications">Checking Informal Specifications</h2>
+<p>Property-based testing shifts our focus from simple assertions about values to logical <em>properties</em> that code should satisfy. Another use is checking informal, natural-language specifications; translating these statements into logical terms allows us to leverage a property-based test to check them.</p>
+<p>One of the building blocks we implemented building SourceClear was a library for interpreting <a href="https://www.first.org/cvss/">CVSS</a>, a set of metrics used to assess the severity of software vulnerabilities.</p>
+<p>The textual encoding of a set of CVSS metrics is called a <em>vector</em>:</p>
+<pre><code>AV:A/AC:L/Au:N/C:P/I:P/A:C/E:ND/RL:OF/RC:ND/CDP:H/TD:M/CR:ND/IR:ND/AR:H</code></pre>
+<p>Vectors are structured, consisting of several <em>metric groups</em>.</p>
+<p><img src="https://www.first.org/cvss/v2/cvss-metric-groups.png" /></p>
+<p>Furthermore, there are many rules governing the relationships between metric groups and values, <a href="https://www.first.org/cvss/v2/guide">specified informally</a>. Both of these make it a prime candidate for property-based testing.</p>
+<p>We start by defining data structures and generators for vectors:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">class</span> CVSSVector {</span>
+<span id="cb9-2"><a href="#cb9-2"></a>  BaseVector baseVector;</span>
+<span id="cb9-3"><a href="#cb9-3"></a>  TemporalVector temporalVector;</span>
+<span id="cb9-4"><a href="#cb9-4"></a>  EnvironmentalVector environmentalVector;</span>
+<span id="cb9-5"><a href="#cb9-5"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">public</span> <span class="kw">class</span> CVSSVectorGenerator <span class="kw">extends</span> Generator&lt;CVSSVector&gt; {</span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="at">@Override</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="kw">public</span> CVSSVector <span class="fu">generate</span>(SourceOfRandomness rand, GenerationStatus gs) {</span>
+<span id="cb10-4"><a href="#cb10-4"></a>    <span class="kw">return</span> <span class="fu">gen</span>().<span class="fu">fieldsOf</span>(CVSSVector.<span class="fu">class</span>).<span class="fu">generate</span>(rand, gs);</span>
+<span id="cb10-5"><a href="#cb10-5"></a>  }</span>
+<span id="cb10-6"><a href="#cb10-6"></a>}</span></code></pre></div>
+<p>As this library parses and pretty-prints vectors, we test a simple property of the <em>implementation</em>: that parsing is invertible, with pretty-printing as its inverse:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb11-1"><a href="#cb11-1"></a><span class="at">@Property</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">cvssVectorInvertible</span>(CVSSVector cvssVector) <span class="kw">throws</span> <span class="bu">ParseException</span> {</span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">assertEquals</span>(cvssVector, <span class="kw">new</span> <span class="fu">CVSSVector</span>(cvssVector.<span class="fu">toString</span>()));</span>
+<span id="cb11-4"><a href="#cb11-4"></a>}</span></code></pre></div>
+<p>So far so good.</p>
+<p>CVSS also defines a <a href="https://www.first.org/cvss/v2/guide#3-2-Equations">means</a> of turning a vector into a numeric score, allowing vectors to be ordered (and vulnerabilities prioritized). We transcribe the equations faithfully, then test a simple property from the spec relating the scores of the base and temporal metric groups:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb12-1"><a href="#cb12-1"></a><span class="co">/**</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a> <span class="co">*</span> <span class="co">...</span> the temporal equation will combine the temporal metrics with the base score</span>
+<span id="cb12-3"><a href="#cb12-3"></a> <span class="co">*</span> to produce a temporal score ranging from <span class="co">0</span> to <span class="co">10. </span>Further<span class="co">,</span> the temporal score will</span>
+<span id="cb12-4"><a href="#cb12-4"></a> <span class="co">*</span> produce a temporal score no higher than the base score<span class="co">,</span> and no greater than <span class="co">33%</span> lower</span>
+<span id="cb12-5"><a href="#cb12-5"></a> <span class="co">*</span> than the base score<span class="co">.</span> </span>
+<span id="cb12-6"><a href="#cb12-6"></a> <span class="co">*/</span></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="at">@Property</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">temporalScoreRange</span>(BaseVector baseVector, TemporalVector temporalVector) <span class="kw">throws</span> <span class="bu">ParseException</span> {</span>
+<span id="cb12-9"><a href="#cb12-9"></a>    <span class="dt">double</span> temporal = temporalVector.<span class="fu">getScore</span>(baseVector);</span>
+<span id="cb12-10"><a href="#cb12-10"></a>    <span class="fu">assertTrue</span>(<span class="dv">0</span> &lt;= temporal &amp;&amp; temporal &lt;= <span class="dv">10</span>);</span>
+<span id="cb12-11"><a href="#cb12-11"></a>    <span class="fu">assertTrue</span>(temporal &lt;= baseVector.<span class="fu">getScore</span>());</span>
+<span id="cb12-12"><a href="#cb12-12"></a>    <span class="dt">double</span> baseThreshold = baseVector.<span class="fu">getScore</span>() * (<span class="dv">1</span> - <span class="fl">0.</span><span class="dv">33</span>);</span>
+<span id="cb12-13"><a href="#cb12-13"></a>    <span class="fu">assertTrue</span>(temporal &lt;= baseThreshold);</span>
+<span id="cb12-14"><a href="#cb12-14"></a>}</span></code></pre></div>
+<p>Surprisingly, the third assertion fails and a counter-example is printed:</p>
+<pre><code>java.lang.AssertionError: Property temporalScoreRange falsified.
+Args: [AV:A/AC:L/Au:N/C:P/I:P/A:N, E:H/RL:OF/RC:UR]</code></pre>
+<p>Our first thought is that the implementation is wrong in some way. Perhaps floating-point error? We check <a href="https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator">two</a> <a href="https://bit-sentinel.com/common-vulnerability-scoring-system-cvss-2-0-online-calculator/">other</a> implementations of CVSS2 scoring and see the same result: a base score of 4.8, a temporal score of 4.0, and the impossible assertion <code>4.0 &lt; 4.8 * (1-0.33)</code>.</p>
+<p>Looking at the temporal equation analytically, we see that the minimum temporal score is:</p>
+<pre><code>temporal = base * min(exploitability) * min(remediationLevel) * min(reportConfidence)
+         = base * 0.85 * 0.87 * 0.9
+         = base * 0.67 (2 d.p.)</code></pre>
+<p>In other words, “33% lower than the base score” is the <em>lower bound</em>. Clearly the spec should have said <strong>no smaller than</strong>, i.e. <code>base * (1-0.33) &lt;= temporal &lt;= base</code>. Note also the inconsistent uses of <em>higher</em> and <em>greater</em>, and the difficulty of parsing that sentence in general; issues like these illustrate why natural language should be kept to a minimum in specifications.</p>
+<p>We continue transcribing and testing, and find a similar error in the computation for the environmental score.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb15-1"><a href="#cb15-1"></a><span class="co">/**</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a> <span class="co">*</span> <span class="co">...</span> the environmental equation will combine the environmental metrics with the temporal</span>
+<span id="cb15-3"><a href="#cb15-3"></a> <span class="co">*</span> score to produce an environmental score ranging from <span class="co">0</span> to <span class="co">10. </span>Further<span class="co">,</span> this equation will</span>
+<span id="cb15-4"><a href="#cb15-4"></a> <span class="co">*</span> produce a score no higher than the temporal score<span class="co">.</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a> <span class="co">*/</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="at">@Property</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">environmentalScoreRange</span>(BaseVector baseVector, TemporalVector temporalVector,</span>
+<span id="cb15-8"><a href="#cb15-8"></a>                                    EnvironmentalVector environmentalVector) <span class="kw">throws</span> <span class="bu">ParseException</span> {</span>
+<span id="cb15-9"><a href="#cb15-9"></a>    <span class="dt">double</span> environmentalScore = environmentalVector.<span class="fu">getScore</span>(baseVector, temporalVector);</span>
+<span id="cb15-10"><a href="#cb15-10"></a>    <span class="fu">assertTrue</span>(<span class="dv">0</span> &lt;= environmentalScore &amp;&amp; environmentalScore &lt;= <span class="dv">10</span>);</span>
+<span id="cb15-11"><a href="#cb15-11"></a>    <span class="fu">assertTrue</span>(environmentalScore &lt; temporalVector.<span class="fu">getScore</span>(baseVector));</span>
+<span id="cb15-12"><a href="#cb15-12"></a>}</span></code></pre></div>
+<pre><code>java.lang.AssertionError: Property environmentalScoreRange falsified.
+Args: [AV:N/AC:M/Au:M/C:P/I:C/A:P, E:H/RL:ND/RC:UR, CDP:LM/TD:ND/CR:M/IR:M/AR:M]</code></pre>
+<p>Here the equations are given in terms of both the base and temporal scores, and consequently the cause of the error is much less obvious, demonstrating the value of the property-based approach.</p>
+<p>The interesting thing about this example is that it shows that once the implementation is correct (e.g. comparable to another implementation), the property-based test extends to a test of the <em>specification</em>.</p>
+<p>This idea is very similar to grammar-based fuzzing, which we’ll cover next.</p>
+<h1 id="gramtest-a-tool-for-grammar-based-test-case-generation">GramTest: a tool for grammar-based test case generation</h1>
+<p>In a series of previous articles, we learnt about <a href="https://blog.srcclr.com/automated-unit-test-generation-for-java/">automated unit test generation</a> using search-based and <a href="https://blog.srcclr.com/property-based-testing-for-java/">property-based</a> methods. We also looked at <a href="https://github.com/codelion/pathgrind">Pathgrind</a>, a tool for <a href="https://blog.srcclr.com/dynamic-symbolic-execution-with-pathgrind/">dynamic symbolic execution</a> that can be used for automated fuzzing of binaries. Continuing on the same theme, in this article we will look at how grammar-based test case generation works in practice. We also present a new tool - <a href="https://github.com/codelion/gramtest">Gramtest</a>. Gramtest allows you to generate test cases based on arbitrary user defined grammars. Potential applications of the tool include automated fuzzing and testing.</p>
+<p>Several programs (like parsers, interpreters and compilers) that work on structured input can be tested using grammars. These applications process their input in different stages like tokenizing, building parse tree, converting to AST and evaluating the AST. For such applications, due to the large number of control flow paths in the early processing, random fuzzing does not yield good test cases. Generating tests that exploit the structured nature of the input can provide better results. The simplest way to provide specify the input is in from of context-free grammars.</p>
+<h2 id="context-free-grammar">Context-free grammar</h2>
+<p>A context-free grammar or CFG is a set of recursive rewriting rules (also called productions) used to generate patterns of strings. As an example, consider the following CFG for arithmetic expressions.</p>
+<pre><code>&lt;expression&gt;  ::=   &lt;term&gt; &lt;addOps&gt; &lt;expression&gt; | &lt;term&gt;
+&lt;term&gt;        ::=   &lt;factor&gt; &lt;multOps&gt; &lt;term&gt; | &lt;factor&gt;
+&lt;addOps&gt;      ::=   + | -
+&lt;multOps&gt;     ::=   * | /
+&lt;factor&gt;      ::=   &quot;(&quot; &lt;expression&gt; &quot;)&quot; | &lt;constant&gt;
+&lt;constant&gt;    ::=   0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</code></pre>
+<p>The above grammar captures the language of all strings using four operators (“+”,“-”,“<em>","/") brackets ("(",")") and numbers (0-9). The set of symbols that can appear in the strings generated by the grammar are called terminals. We can generate all the strings in the grammar by following the production rules. E.g. for generating the string "(1 + 2) </em> 3”, we can apply the following rules:</p>
+<pre><code>&lt;expression&gt; ::= &lt;term&gt;
+    &lt;term&gt; ::= &lt;factor&gt; &lt;multiOps&gt; &lt;term&gt;
+        &lt;factor&gt; ::= &quot;(&quot; &lt;expression&gt; &quot;)&quot;
+            &lt;expression&gt; ::= &lt;term&gt; &lt;addOps&gt; &lt;expression&gt;
+                &lt;term&gt;  ::= &lt;factor&gt;
+                    &lt;factor&gt; ::=    &lt;constant&gt;
+                        &lt;constant&gt; ::= 1
+                &lt;addOps&gt; ::= +
+                &lt;expression&gt; ::= &lt;term&gt;
+                    &lt;term&gt;  ::= &lt;factor&gt;
+                        &lt;factor&gt; ::= &lt;constant&gt;
+                            &lt;constant&gt; ::= 2
+        &lt;multiOps&gt; ::= *
+        &lt;term&gt; ::= &lt;factor&gt;
+            &lt;factor&gt; ::= &lt;constant&gt;
+                &lt;constant&gt; ::= 3</code></pre>
+<p>Each string in the grammar starts at the first symbol and then follows the production rules till it reaches a terminal symbol. The rules of the grammar as given above are said to be in <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus-Naur Form</a> (or BNF). It is one of two main notation techniques used for representing context-free grammars. Once we have specified the input to a program in BNF, we can do test case generation by exhaustively applying all the production rules to generate strings. We present <a href="https://github.com/codelion/gramtest">Gramtest</a> a tool written in Java that can be used for this purpose.</p>
+<h2 id="gramtest">Gramtest</h2>
+<p>Gramtest is implemented using the <a href="http://www.antlr.org/">ANTLR4</a> parser generator. To specify the structure of the inputs used to generate tests we use the BNF grammar available from the <a href="https://github.com/antlr/grammars-v4/blob/master/bnf/bnf.g4">ANTLR repository</a>. In addition, there are some <a href="https://blog.srcclr.com/useful-maven-plugins-for-working-with-ANTLR-4-grammars/">useful Maven plugins</a> that we use for our development while working with the grammars. The BNF grammar allows us to recognize any language given in the BNF format. The syntax for BNF can itself be represented with a BNF as follows:</p>
+<pre><code> &lt;syntax&gt;         ::= &lt;rule&gt; | &lt;rule&gt; &lt;syntax&gt;
+ &lt;rule&gt;           ::= &lt;opt-whitespace&gt; &quot;&lt;&quot; &lt;rule-name&gt; &quot;&gt;&quot; &lt;opt-whitespace&gt;
+                                &quot;::=&quot; &lt;opt-whitespace&gt; &lt;expression&gt; &lt;line-end&gt;
+ &lt;opt-whitespace&gt; ::= &quot; &quot; &lt;opt-whitespace&gt; | &quot;&quot;
+ &lt;expression&gt;     ::= &lt;list&gt; | &lt;list&gt; &quot;|&quot; &lt;expression&gt;
+ &lt;line-end&gt;       ::= &lt;opt-whitespace&gt; &lt;EOL&gt; | &lt;line-end&gt; &lt;line-end&gt;
+ &lt;list&gt;           ::= &lt;term&gt; | &lt;term&gt; &lt;opt-whitespace&gt; &lt;list&gt;
+ &lt;term&gt;           ::= &lt;literal&gt; | &quot;&lt;&quot; &lt;rule-name&gt; &quot;&gt;&quot;
+ &lt;literal&gt;        ::= &#39;&quot;&#39; &lt;text&gt; &#39;&quot;&#39; | &quot;&#39;&quot; &lt;text&gt; &quot;&#39;&quot;</code></pre>
+<p>The grammar for arithmetic expressions given in previous section fits in this syntax. To generate tests from a given BNF grammar we need to exhaustively enumerate all the strings in the grammar. The Gramtest tool makes it easy to do just that. To run the tool and generate test cases for the arithmetic expressions grammar, we just run the following on the command line:</p>
+<pre><code>Asankhayas-MacBook-Pro:target asankhaya$ java -jar gramtest-0.1-SNAPSHOT-jar-with-dependencies.jar
+-file ../src/test/resources/arithexp.bnf
+
+Generating tests ...
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+0
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+1
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+2
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+3
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+4
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+5
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+6
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+7
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+8
+...</code></pre>
+<p>The “-file” command tells Gramtest to look for the input grammar in the file “arithexp.bnf”. By default the generated tests are printed on the screen. In case you want to save them to a folder to use with your program you can use the “-tests” option as follows:</p>
+<pre><code>Asankhayas-MacBook-Pro:target asankhaya$ java -jar gramtest-0.1-SNAPSHOT-jar-with-dependencies.jar
+-file ../src/test/resources/arithexp.bnf -tests generated-tests
+
+Generating tests ...
+All tests have been saved in the generated-tests folder!</code></pre>
+<p>This will save all the test cases in the “generated-tests” folder.</p>
+<pre><code>Asankhayas-MacBook-Pro:target asankhaya$ ls generated-tests/
+1.txt   17.txt  25.txt  33.txt  41.txt  5.txt   58.txt  66.txt  74.txt  82.txt  90.txt  99.txt
+10.txt  18.txt  26.txt  34.txt  42.txt  50.txt  59.txt  67.txt  75.txt  83.txt  91.txt
+100.txt 19.txt  27.txt  35.txt  43.txt  51.txt  6.txt   68.txt  76.txt  84.txt  92.txt
+11.txt  2.txt   28.txt  36.txt  44.txt  52.txt  60.txt  69.txt  77.txt  85.txt  93.txt
+...</code></pre>
+<p>The test cases can then be run with the target program for fuzzing and automated testing. As an another example, lets consider a BNF grammar for generating all strings that have the word “main” in them.</p>
+<pre><code>&lt;program&gt;   ::=   &lt;letter*&gt; m a i n &lt;letter*&gt;
+&lt;letter*&gt;   ::=   { &lt;letter&gt; &lt;letter*&gt; }
+&lt;letter&gt;    ::=   A | B | C | D | E | F | G | H | I | J | K | L | M | N |
+                  O | P | Q | R | S | T | U | V | W | X | Y | Z |
+                  a | b | c | d | e | f | g | h | i | j | k | l | m | n |
+                  o | p | q | r | s | t | u | v | w | x | y | z</code></pre>
+<p>The above BNF grammar uses the curly brackets (“{”, “}”) construct in BNF to apply the production rule "&lt;letter*&gt;“, zero or more times. Running Gramtest with this grammar as input produces strings that contain the world”main" somewhere in them.</p>
+<pre><code>Asankhayas-MacBook-Pro:target asankhaya$ java -jar gramtest-0.1-SNAPSHOT-jar-with-dependencies.jar
+-file ../src/test/resources/main.bnf
+
+Generating tests ...
+AAAmainAAA
+AAAmainAAB
+AAAmainAAC
+AAAmainAAD
+AAAmainAAE
+AAAmainAAF
+AAAmainAAG
+AAAmainAAH
+AAAmainAAI
+AAAmainAAJ
+...</code></pre>
+<p>In addition to the special curly bracket symbols, Gramtest also supports the square brackets (“[", "]”) for specifying an optional production rule. While, the parentheses (“(”, “)”) are used for repeating the rule one or more times. For details on the syntax support please refer to the <a href="https://github.com/codelion/gramtest/blob/master/src/main/antlr4/com/sourceclear/gramtest/bnf.g4">BNF ANTLR4 grammar</a> that is included with the sources of Gramtest. Hopefully, by now you are convinced that Gramtest is a useful tool to generate test cases from arbitrary user defined grammars.</p>
+<p>We will look at some of the details behind the implementation of the tool in a future article. Meanwhile, do let us know your comments on grammar-based testing and please feel free to contribute to the tool by forking it on <a href="https://github.com/codelion/gramtest">Github</a>.</p>
+<p>Now, we will examine some practical tips to keep in mind while implementing grammar-based test case generation. These guidelines are based on the experience of implementing <a href="https://github.com/codelion/gramtest">Gramtest</a> - a Java tool that allows you to generate test cases based on arbitrary user defined grammars. If you are curious about what is grammar-based test case generation, I suggest you look at our <a href="https://blog.srcclr.com/how-does-grammar-based-test-case-generation-work/">previous article</a> on the topic. Let’s jump right in on how we implemented Gramtest.</p>
+<h2 id="implementation">Implementation</h2>
+<p>The key aspect of the grammar-based test case generation algorithm in Gramtest is to follow all the production rules of the given BNF grammar and then generate strings that conform to the grammar. The production rules themselves form a tree, the root of the tree is the starting rule for generating all the strings in the grammar. For example, consider the following BNF grammar describing all the course codes at a university:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">&lt;coursecode&gt;</span>   ::= <span class="kw">&lt;acadunit&gt;</span> <span class="kw">&lt;coursenumber&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a><span class="kw">&lt;acadunit&gt;</span>     ::= <span class="kw">&lt;letter&gt;</span> <span class="kw">&lt;letter&gt;</span> <span class="kw">&lt;letter&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3"></a><span class="kw">&lt;coursenumber&gt;</span> ::= <span class="kw">&lt;year&gt;</span> <span class="kw">&lt;semesters&gt;</span> <span class="kw">&lt;digit&gt;</span> <span class="kw">&lt;digit&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4"></a><span class="kw">&lt;year&gt;</span>         ::= <span class="kw">&lt;ugrad&gt;</span> | <span class="kw">&lt;grad&gt;</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a><span class="kw">&lt;ugrad&gt;</span>        ::= 0 | 1 | 2 | 3 | 4</span>
+<span id="cb25-6"><a href="#cb25-6"></a><span class="kw">&lt;grad&gt;</span>         ::= 5 | 6 | 7 | 9</span>
+<span id="cb25-7"><a href="#cb25-7"></a><span class="kw">&lt;semesters&gt;</span>    ::= <span class="kw">&lt;onesemester&gt;</span> | <span class="kw">&lt;twosemesters&gt;</span></span>
+<span id="cb25-8"><a href="#cb25-8"></a><span class="kw">&lt;onesemester&gt;</span>  ::= <span class="kw">&lt;frenchone&gt;</span> | <span class="kw">&lt;englishone&gt;</span> | <span class="kw">&lt;bilingual&gt;</span></span>
+<span id="cb25-9"><a href="#cb25-9"></a><span class="kw">&lt;frenchone&gt;</span>    ::= 5 | 7</span>
+<span id="cb25-10"><a href="#cb25-10"></a><span class="kw">&lt;englishone&gt;</span>   ::= 1 | 3</span>
+<span id="cb25-11"><a href="#cb25-11"></a><span class="kw">&lt;bilingual&gt;</span>    ::= 9</span>
+<span id="cb25-12"><a href="#cb25-12"></a><span class="kw">&lt;twosemesters&gt;</span> ::= <span class="kw">&lt;frenchtwo&gt;</span> | <span class="kw">&lt;englishtwo&gt;</span></span>
+<span id="cb25-13"><a href="#cb25-13"></a><span class="kw">&lt;frenchtwo&gt;</span>    ::= 6 | 8</span>
+<span id="cb25-14"><a href="#cb25-14"></a><span class="kw">&lt;englishtwo&gt;</span>   ::= 2 | 4</span>
+<span id="cb25-15"><a href="#cb25-15"></a><span class="kw">&lt;digit&gt;</span>        ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</span>
+<span id="cb25-16"><a href="#cb25-16"></a><span class="kw">&lt;letter&gt;</span>       ::= A | B | C | D | E | F | G | H | I | J | K | L | M | N |</span>
+<span id="cb25-17"><a href="#cb25-17"></a>                   O | P | Q | R | S | T | U | V | W | X | Y | Z</span></code></pre></div>
+<p>In this grammar the rule <code>&lt;coursecode&gt; ::= &lt;acadunit&gt; &lt;coursenumber&gt;</code> is at the root. In order to generate the strings in this grammar, we follow all the rules starting from the root (going from top to bottom) to a terminal. When we reach a terminal, we generate a string corresponding to that terminal. For rules that contain alternatives we need to follow all the alternate branches generating strings in an exhaustive manner. Thus, when we run Gramtest on this input it generates the following strings:</p>
+<pre><code>Asankhayas-MacBook-Pro:target asankhaya$
+java -jar gramtest-0.1-SNAPSHOT-jar-with-dependencies.jar
+-file ../src/test/resources/coursecodes.bnf
+Generating tests ...
+ZZX0989
+ZZW0989
+ZZW0988
+ZZV0988
+ZZV0987
+ZZU0987
+ZZU0986
+ZZT0986
+ZZT0985
+ZZS0985
+ZZS0984
+ZZR0984
+ZZR0983
+ZZQ0983
+ZZQ0982
+ZZP0982
+ZZP0981
+...</code></pre>
+<p>This simple algorithm based on exhaustive search over the production rules guarantees that we will generate all possible strings in the grammar. However, it may not be feasible to do so all the time. Let us look at some of the challenges with this approach that make it difficult to use it for practical test case generation.</p>
+<h2 id="challenges">Challenges</h2>
+<p>In general, a given BNF grammar can contain infinitely many strings due to the recursive nature of the production rules. Recall the following grammar for arithmetic expressions from our <a href="https://blog.srcclr.com/how-does-grammar-based-test-case-generation-work/">previous article</a>:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">&lt;expression&gt;</span>  ::=   <span class="kw">&lt;term&gt;</span> <span class="kw">&lt;addOps&gt;</span> <span class="kw">&lt;expression&gt;</span> | <span class="kw">&lt;term&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a><span class="kw">&lt;term&gt;</span>        ::=   <span class="kw">&lt;factor&gt;</span> <span class="kw">&lt;multOps&gt;</span> <span class="kw">&lt;term&gt;</span> | <span class="kw">&lt;factor&gt;</span></span>
+<span id="cb27-3"><a href="#cb27-3"></a><span class="kw">&lt;addOps&gt;</span>      ::=   + | -</span>
+<span id="cb27-4"><a href="#cb27-4"></a><span class="kw">&lt;multOps&gt;</span>     ::=   * | /</span>
+<span id="cb27-5"><a href="#cb27-5"></a><span class="kw">&lt;factor&gt;</span>      ::=   &quot;(&quot; <span class="kw">&lt;expression&gt;</span> &quot;)&quot; | <span class="kw">&lt;constant&gt;</span></span>
+<span id="cb27-6"><a href="#cb27-6"></a><span class="kw">&lt;constant&gt;</span>    ::=   0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</span></code></pre></div>
+<p>This grammar captures all possible arithmetic expressions and thus if we blindly follow the rules and generate strings, the test case generation will never finish. It is also possible for a BNF grammar without recursive rules to have an unbounded number of strings if the grammar uses the repetition operator. Due to all these cases we need to find a way to terminate the test-case generation algorithm early, otherwise Gramtest would not be very useful for automated fuzzing and testing.</p>
+<h2 id="practical-tips">Practical Tips</h2>
+<p>We look at three useful ideas that improve on the simple naive exhaustive test case generation and provide a mechanism to address the challenges described in the previous section. All the following three tips are implemented in Gramtest, and if you are curious you can also have a look at the <a href="https://github.com/codelion/gramtest">source code</a>.</p>
+<h3 id="tip-1-restrict-the-number-of-tests-to-be-generated">Tip 1: Restrict the number of tests to be generated</h3>
+<p>The easiest way to fix the problem is to just restrict the maximum number of test cases that can be generated. In Gramtest, this can be done by using the <code>-num</code> switch. This will ensure that the test case generation algorithm stops after generating the specified number of tests. For example we can generate 10 test cases from the BNF grammar of arithmetic expressions by setting <code>-num 10</code> as shown below:</p>
+<pre><code>Asankhayas-MacBook-Pro:target asankhaya$
+java -jar gramtest-0.1-SNAPSHOT-jar-with-dependencies.jar
+-file ../src/test/resources/arithexp.bnf -num 10
+Generating tests ...
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+0
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+1
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+2
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+3
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+4
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+5
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+6
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+7
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+8
+(0*0+0)*(0)*0*0*0+(0)*0*0*0+0*0*0+0*0+9</code></pre>
+<h3 id="tip-2-bound-the-depth-of-recursive-rules">Tip 2: Bound the depth of recursive rules</h3>
+<p>The first tip, though useful, will unfortunately not work for a grammar with recursive rules. While generating the test cases for a recursive rule, we can end up applying the rule again and again (due to recursion) and thus it is possible that the algorithm will not terminate even while generating a single string. To handle such cases we propose bounding the depth of the recursive rule. In Gramtest it can be done by setting the <code>-dep</code> parameter as shown below:</p>
+<pre><code>Asankhayas-MacBook-Pro:target asankhaya$
+java -jar gramtest-0.1-SNAPSHOT-jar-with-dependencies.jar
+-file ../src/test/resources/arithexp.bnf -num 10 -dep 1
+Generating tests ...
+(0)*0*0*0+0*0*0+0*0+0
+(0)*0*0*0+0*0*0+0*0+1
+(0)*0*0*0+0*0*0+0*0+2
+(0)*0*0*0+0*0*0+0*0+3
+(0)*0*0*0+0*0*0+0*0+4
+(0)*0*0*0+0*0*0+0*0+5
+(0)*0*0*0+0*0*0+0*0+6
+(0)*0*0*0+0*0*0+0*0+7
+(0)*0*0*0+0*0*0+0*0+8
+(0)*0*0*0+0*0*0+0*0+9</code></pre>
+<p>By setting <code>-dep 1</code> above, we ensure that when Gramtest sees a recursive rule it will apply the rule only once (follow the rule only once). Typically, we use this parameter in conjunction with restriction on the maximum number of test cases to ensure that the algorithm terminates. The <code>-dep</code> parameter also implicitly controls the length of the generated strings. If we compare the output above with the one under the previous tip where the default value of <code>-dep</code> (2) was used, it is clear that the length of the strings generated in this case are smaller.</p>
+<h3 id="tip-3-use-a-minimal-sentence-generator">Tip 3: Use a minimal sentence generator</h3>
+<p>If you have a careful look at the strings that are generated above, you will notice that they all exercise only one part of the grammar and they are very similar to each other. For good test case generation we want the generated tests to be more diverse so that they can exercise different paths in the program that is being tested. The quality of the test cases is usually measured using coverage criteria like statement coverage (percentage of statements in the program that are executed by the tests), branch coverage (percentage of conditional branches that are executed by the tests) etc. For grammar-based test case generation, a useful metric is the <em>production coverage</em>. Production coverage refers to the percentage of production rules in the grammar that are exercised by the test cases.</p>
+<p>For achieving production coverage, we can also use a minimal sentence generator. A minimal sentence generator creates a string with the minimum length that is required for the given production rule. Paul Purdom presented a minimal sentence generator in his <a href="http://link.springer.com/article/10.1007%2FBF01932308">classical paper</a> on testing parsers. Although the paper presents the parsers for simple LR(1) grammars, the same ideas can be extended and applied to other grammars. In my paper on <a href="http://asankhaya.github.io/pdf/BuildingExtensibleParserswithCamlp4.pdf">Building Extensible Parsers using Camlp4</a> I describe one such variation of Purdom’s algorithm that can be used to test the extensible grammars supported by Camlp4. Gramtest uses a similar variation for generating minimal sentences for BNF grammars.</p>
+<p>The minimal sentence generator can be set using the <code>-mingen</code> flag as follows:</p>
+<pre><code>Asankhayas-MacBook-Pro:target asankhaya$
+java -jar gramtest-0.1-SNAPSHOT-jar-with-dependencies.jar
+-file ../src/test/resources/arithexp.bnf
+-num 10 -dep 2 -mingen true
+Generating tests ...
+(2*0+9)*(1)+(0)/9
+(2*0+9)*(1)+(0)*0
+(3+0)-(9)*0
+(3+0)-4*1
+(3+0)+4*1
+(3+0)+4/2
+4*(3)+4/2
+(3-2)*(2)+(2)*3
+(3-1)*(3)-(2)*3
+(3+1)/(2)-(1)</code></pre>
+<p>Looking at the output we see that the generated tests are much more diverse and cover different alternatives in the grammar using smaller sentences.</p>
+<p>By using all the three tips we get a tool that is more useful and has practical applications. The default value of the options used in Gramtest are <code>-num 100 -dep 2 -mingen true</code>, but please go ahead and have a look at the <a href="https://github.com/codelion/gramtest">source code</a> or play around with the other options. For a given BNF grammar you may get better results with a different set of options. If you have any further tips based on your experience or have any other suggestions on improving Gramtest, do let us know in the comments.</p>
+<h2 id="continuous-fuzzing-of-java-projects-with-gramtest">Continuous fuzzing of Java projects with GramTest</h2>
+<p>Next we will see how you can use GramTest to generate continuous tests that can in-turn be used to fuzz Java libraries and applications.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">&lt;url&gt;</span> ::=   <span class="kw">&lt;httpaddress&gt;</span> | <span class="kw">&lt;ftpaddress&gt;</span> | <span class="kw">&lt;newsaddress&gt;</span> | <span class="kw">&lt;nntpaddress&gt;</span> |</span>
+<span id="cb31-2"><a href="#cb31-2"></a>      <span class="kw">&lt;prosperoaddress&gt;</span> | <span class="kw">&lt;telnetaddress&gt;</span> | <span class="kw">&lt;gopheraddress&gt;</span> | <span class="kw">&lt;waisaddress&gt;</span> | </span>
+<span id="cb31-3"><a href="#cb31-3"></a>      <span class="kw">&lt;mailtoaddress&gt;</span></span>
+<span id="cb31-4"><a href="#cb31-4"></a></span>
+<span id="cb31-5"><a href="#cb31-5"></a><span class="kw">&lt;httpaddress&gt;</span> ::= h t t p : / / <span class="kw">&lt;hostport&gt;</span> [/ <span class="kw">&lt;path&gt;</span>] [? <span class="kw">&lt;search&gt;</span>]</span>
+<span id="cb31-6"><a href="#cb31-6"></a></span>
+<span id="cb31-7"><a href="#cb31-7"></a><span class="kw">&lt;ftpaddress&gt;</span> ::=  f t p : / / <span class="kw">&lt;login&gt;</span> / <span class="kw">&lt;path&gt;</span> [; <span class="kw">&lt;ftptype&gt;</span>]</span>
+<span id="cb31-8"><a href="#cb31-8"></a></span>
+<span id="cb31-9"><a href="#cb31-9"></a><span class="kw">&lt;newsaddress&gt;</span> ::= n e w s : <span class="kw">&lt;groupart&gt;</span></span>
+<span id="cb31-10"><a href="#cb31-10"></a></span>
+<span id="cb31-11"><a href="#cb31-11"></a><span class="kw">&lt;nntpaddress&gt;</span> ::=   n n t p : <span class="kw">&lt;group&gt;</span> / <span class="kw">&lt;digits&gt;</span></span>
+<span id="cb31-12"><a href="#cb31-12"></a></span>
+<span id="cb31-13"><a href="#cb31-13"></a><span class="kw">&lt;telnetaddress&gt;</span> ::=  t e l n e t : / / <span class="kw">&lt;login&gt;</span></span>
+<span id="cb31-14"><a href="#cb31-14"></a></span>
+<span id="cb31-15"><a href="#cb31-15"></a><span class="kw">&lt;gopheraddress&gt;</span> ::=  g o p h e r : / / <span class="kw">&lt;hostport&gt;</span> [/ <span class="kw">&lt;gtype&gt;</span> [<span class="kw">&lt;gcommand&gt;</span>]]</span>
+<span id="cb31-16"><a href="#cb31-16"></a>      </span>
+<span id="cb31-17"><a href="#cb31-17"></a><span class="kw">&lt;mailtoaddress&gt;</span> ::=  m a i l t o : <span class="kw">&lt;xalphas&gt;</span> @ <span class="kw">&lt;hostname&gt;</span></span>
+<span id="cb31-18"><a href="#cb31-18"></a></span>
+<span id="cb31-19"><a href="#cb31-19"></a><span class="kw">&lt;waisaddress&gt;</span> ::= <span class="kw">&lt;waisindex&gt;</span> | <span class="kw">&lt;waisdoc&gt;</span></span>
+<span id="cb31-20"><a href="#cb31-20"></a></span>
+<span id="cb31-21"><a href="#cb31-21"></a><span class="kw">&lt;waisindex&gt;</span> ::=   w a i s : / / <span class="kw">&lt;hostport&gt;</span> / <span class="kw">&lt;database&gt;</span> [? <span class="kw">&lt;search&gt;</span>]</span>
+<span id="cb31-22"><a href="#cb31-22"></a></span>
+<span id="cb31-23"><a href="#cb31-23"></a><span class="kw">&lt;waisdoc&gt;</span> ::=   w a i s : / / <span class="kw">&lt;hostport&gt;</span> / <span class="kw">&lt;database&gt;</span> / <span class="kw">&lt;wtype&gt;</span> / <span class="kw">&lt;wpath&gt;</span></span>
+<span id="cb31-24"><a href="#cb31-24"></a></span>
+<span id="cb31-25"><a href="#cb31-25"></a><span class="kw">&lt;wpath&gt;</span>   ::=   <span class="kw">&lt;digits&gt;</span> = <span class="kw">&lt;path&gt;</span> ; [<span class="kw">&lt;wpath&gt;</span>]</span></code></pre></div>
+<p>As an example we will use the grammar for URLs as defined in <a href="https://tools.ietf.org/html/rfc1738">rfc1738</a>. Part of the grammar is shown above and as you can see, it if fairly complex. If you directly run GramTest from command line using this grammar as input you will get some interesting test cases:</p>
+<pre><code>Generating tests ...
+mailto:5ol@S*7
+prospero://E:4/%Dd
+http://c7
+nntp:N.p/00
+telnet://
+news:O2
+ftp://+n@aF5:21/
+wais://B.U/*u/,4_/82=;
+gopher://T53</code></pre>
+<p>This is good for test case generation but not ideal if you want to run a long fuzzing session with some library or application. For doing continuous fuzzing you can use GramTest as a library very easily. The <a href="https://github.com/codelion/gramtest/blob/master/src/main/java/com/sourceclear/gramtest/TestRunner.java"><code>TestRunner</code></a> class provided in GramTest makes it easy to integrate with any application for fuzzing. You can even implement it as part of a test case:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb33-1"><a href="#cb33-1"></a><span class="co">/**</span></span>
+<span id="cb33-2"><a href="#cb33-2"></a> <span class="co">*</span> Test with url grammar</span>
+<span id="cb33-3"><a href="#cb33-3"></a> <span class="co">* </span><span class="an">@throws java.io.IOException</span></span>
+<span id="cb33-4"><a href="#cb33-4"></a> <span class="co">*/</span></span>
+<span id="cb33-5"><a href="#cb33-5"></a><span class="at">@Test</span></span>
+<span id="cb33-6"><a href="#cb33-6"></a><span class="at">@Ignore</span>(<span class="st">&quot;Non terminating test case&quot;</span>)</span>
+<span id="cb33-7"><a href="#cb33-7"></a><span class="kw">public</span> <span class="dt">void</span> <span class="fu">testQueueGenerator</span>() <span class="kw">throws</span> <span class="bu">IOException</span>, <span class="bu">InterruptedException</span> {</span>
+<span id="cb33-8"><a href="#cb33-8"></a>  <span class="dt">final</span> <span class="bu">BlockingQueue</span>&lt;<span class="bu">String</span>&gt; queue = <span class="kw">new</span> <span class="bu">SynchronousQueue</span>&lt;&gt;();</span>
+<span id="cb33-9"><a href="#cb33-9"></a>  TestRunner continuousRunner = <span class="kw">new</span> <span class="fu">TestRunner</span>(<span class="fu">getClass</span>().<span class="fu">getResourceAsStream</span>(<span class="st">&quot;/url.bnf&quot;</span>), queue, <span class="dv">10</span>, <span class="dv">8</span>, <span class="dv">32</span>);</span>
+<span id="cb33-10"><a href="#cb33-10"></a>  <span class="kw">new</span> <span class="bu">Thread</span>(continuousRunner).<span class="fu">start</span>();</span>
+<span id="cb33-11"><a href="#cb33-11"></a>  <span class="fu">consumeTests</span>(queue);</span>
+<span id="cb33-12"><a href="#cb33-12"></a>}</span>
+<span id="cb33-13"><a href="#cb33-13"></a></span>
+<span id="cb33-14"><a href="#cb33-14"></a><span class="kw">private</span> <span class="dt">void</span> <span class="fu">consumeTests</span>(<span class="bu">BlockingQueue</span>&lt;<span class="bu">String</span>&gt; queue) <span class="kw">throws</span> <span class="bu">InterruptedException</span> {</span>
+<span id="cb33-15"><a href="#cb33-15"></a>  <span class="kw">while</span> (<span class="kw">true</span>) {</span>
+<span id="cb33-16"><a href="#cb33-16"></a>    <span class="bu">String</span> testCase = queue.<span class="fu">take</span>();</span>
+<span id="cb33-17"><a href="#cb33-17"></a>    <span class="kw">try</span> {</span>
+<span id="cb33-18"><a href="#cb33-18"></a>      <span class="bu">URL</span>.<span class="fu">parse</span>(testCase);</span>
+<span id="cb33-19"><a href="#cb33-19"></a>    } <span class="kw">catch</span> (URLParseException e) {</span>
+<span id="cb33-20"><a href="#cb33-20"></a>      <span class="bu">System</span>.<span class="fu">out</span>.<span class="fu">println</span>(testCase);</span>
+<span id="cb33-21"><a href="#cb33-21"></a>    }</span>
+<span id="cb33-22"><a href="#cb33-22"></a>  }</span>
+<span id="cb33-23"><a href="#cb33-23"></a>}</span></code></pre></div>
+<p>Just pass the BNF grammar file as input and a <code>BlockingQueue</code> to read the generated tests. The queue just makes it easy to add multiple consumers that can each run in their own thread in parallel. This will allow you to run long fuzzing sessions against a target Java library or application. In fact with this exact set up and the given URL input grammar, GramTest found <a href="https://issues.apache.org/jira/browse/VALIDATOR-410">a bug</a> in the Apache Commons URL validator.</p>
+<p>If you use GramTest and find new bugs using it, please let us know. Until next time, happy fuzzing!</p>
+<h1 id="execute-your-user-stories">Execute Your User Stories!</h1>
+<h2 id="lets-build-something">Let’s build something!</h2>
+<pre><code>Product Owner: &quot;Let&#39;s build something that brings me across the Atlantic Ocean.&quot;
+Developer: (Builds a plane...)
+Product Owner: &quot;Uh... I actually just needed a ship.&quot;
+Developer: Uh... ok...</code></pre>
+<p>Although the above scenario sounds contrived, this happens a lot on a smaller scale in software teams. Requirements from product management are sometimes poorly specified, causing developers to have to guess what’s on the product owner’s mind. This leads to developers coming up with products that are over-engineered or worse; the implementation sometimes misses the mark and fails to build the intended product.</p>
+<h2 id="what-can-we-do-about-it">What can we do about it?</h2>
+<p>We need something to bridge the gap between the product owner and the developer. Something that can describe exactly what is being built so everyone is on the same page and no effort is wasted. A tool that tries to solve this is <a href="https://cucumber.io/">Cucumber</a>. Cucumber is a testing tool that supports <a href="https://cucumber.io/docs/bdd/">behavior driven development (BDD)</a>, an extension of test driven development (TDD). In TDD, developers write tests before writing code, whereas in BDD, the specifications (or behaviors, hence BDD) are written before code is written. These specifications are what the user actually wants in the product. In Cucumber, these feature specifications are usually written by the product owner in collaboration with the development team. The developers would then implement them. The specifications can then be executed with Cucumber to ensure that they are working as intended. In some sense, the specifications are now the tests and they can be run as part of the CI pipeline.</p>
+<p>In summary a BDD cycle would look like this:</p>
+<ul>
+<li>Product owner writes feature specifications in collaboration with the development team.</li>
+<li>Developers implement the feature.</li>
+<li>Cucumber tests are executed in CI to ensure specifications were met.</li>
+</ul>
+<h2 id="example-of-a-feature-specificaton">Example of a feature specificaton</h2>
+<p>In Cucumber, product specifications are written in features files using a Domain-specific Language (DSL) known as Gherkin. In its simplest form, Gherkin programs consist of a series of Given-When-Then clauses that are close to natural language. Here’s an example of a feature file in Cucumber that specifies a feature for a calculator program:</p>
+<pre class="cucumber"><code>Feature: Addition
+  Scenario: Calculate the sum of two integers
+    Given two integers
+    When the add button is pressed
+    Then the sum of the two integers should be displayed</code></pre>
+<p>Being very close to natural language, it is readable by stakeholders in the organization and non-technical product owners. In the above example it is clear how the user is interacting with the program, what the inputs and preconditions are, and what should be expected. These properties are described using the Given-When-Then language:</p>
+<ul>
+<li><code>Given</code>: describes the preconditions of the feature</li>
+<li><code>When</code>: describes the action that the user carries out in the feature</li>
+<li><code>Then</code>: desribes what’s expected after the action is performed</li>
+</ul>
+<p>In Cucumber, these are known as steps. Each step when evaluated has a predefined behavior. Although Cucumber comes with some predefined steps, developers can extend the language to suit their applications. For example, the following step uses the <code>click_on</code> method defined in the <code>capybara</code> ruby gem. It navigates to the home page when Cucumber sees a step that says <code>When the home button is clicked</code>:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb36-1"><a href="#cb36-1"></a><span class="dt">When</span>(<span class="ot">/^the home button is clicked$/</span>) <span class="kw">do</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a>  click_on <span class="st">&#39;Home&#39;</span></span>
+<span id="cb36-3"><a href="#cb36-3"></a><span class="kw">end</span></span></code></pre></div>
+<h2 id="executable-user-stories">Executable user stories</h2>
+<p>In an agile team, this feature file is also known as a user story. It defines a user’s requirements in the way the user would interact with the software. Apart from being a document to communicate the requirements of a user, this feature file can be executed and run against the product to ensure that the product meets the user’s requirements and use cases as described in the story. To do so, Cucumber evaluates the Gherkin language, populates the test environment with the preconditions and input, simulates the interaction with the program, and lastly checks the actual behavior of the program against the desired behavior as specified in the feature file.</p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>Cucumber and BDD close the gap between the non-technical requirements and technical implementation. They also close the gap between the product owners and the developers. When writing in Gherkin, software teams have to think about the requirements in a user-centric way. Requirements are no longer just “Build a calculator that adds”; with Given-When-Then clauses, developers have to think harder about preconditions, inputs, and expectations of each feature. What’s more, with Cucumber, these files are executable, thus ensuring that the working implementation of the program runs exactly in the way that is described in the feature file.</p>
+<h1 id="where-is-my-cassette-mocking-system-testing-using-capture-and-replay">Where is My Cassette? Mocking System Testing using Capture and Replay</h1>
+<h2 id="introduction">Introduction</h2>
+<p><em>Software Composition Analysis</em> (<em>SCA</em>) has gained traction in industry with offerings from various companies. It helps developers identify vulnerable open-source libraries used in the software they develop. The following picture shows the architecture of an SCA system:</p>
+<figure>
+<img src="https://srcclr.github.io/oct-wave/images/sca-overview.png" alt="" /><figcaption>Software Composition Analysis System</figcaption>
+</figure>
+<p>In an SCA system, a customer scans their applications using a scanner software, which will then send the evidence of third-party dependencies to a server for matching with known vulnerabilities, whose data stored in a vulnerability database. The vulnerability database itself is curated by a team security researchers in years.</p>
+<p>Veracode provides an <em>Agent-Based Scan</em> service using a <em>Command-Line Interface</em> (<em>CLI</em>) agent that the customers run on their own machines to scan for vulnerable libraries used by their applications. The SCA CLI agent sends the evidence of third-party libraries to a data server, which matches them with known vulnerable libraries in the database.</p>
+<p>Veracode’s CLI agent runs on the customer’s side, and it is important to ensure that it works correctly, given the environment the customer runs the agent in. There are three kinds of automated testing that we perform for the CLI agent:</p>
+<ol type="1">
+<li><p><em>Unit testing</em>, which is the test that the output or behavior of methods are correct, given some input.</p></li>
+<li><p><em>Integration testing</em>, which is to actually execute the agent in various configurations, but scanning mocks instead of actual projects. Here we observe the actual output of the agent, such as its return value. There is no actual communication with the SCA vulnerability database server.</p></li>
+<li><p><em>System testing</em>, which is to actually execute the agent for scanning real projects and observe its behavior. Here the test checks the correctness of the actual messages sent by the agent to the server, which constitute the output of the agent.</p></li>
+</ol>
+<p>In this article we discuss our approach to system testing, which, in order to test for the output correctness, generates checks using a <em>capture</em> mechanism and perform the actual test using a <em>replay</em> mechanism. The advantage of using such mechanisms is that it allows us to <em>mock</em> the SCA server and the library repositories during agent run, such as when issues are detected by the tests, we will be able to immediately localize as an issue belonging to the agent itself. As at the time of writing, for Veracode agent-based scan, the system testing has been implemented for real project scans on the Linux platform, and the same for Windows platform is planned.</p>
+<h2 id="testing-objectives">Testing Objectives</h2>
+<p>Testing can be done for various purposes, such as for testing the usability and performance of the software being developed. Here our strategic purpose of performing system testing is to detect <em>regression</em>, that is, the reduction in the quality of the CLI agent, which potentially happens as the agent is being updated. Particularly, with our system testing we want to ensure that the CLI agent and the SCA server, as well as the library repositories work well together, particularly after making updates to the source code of the CLI agent.</p>
+<p>The technical objectives include two:</p>
+<ul>
+<li><p>To ensure that the agent actually performs the computation that we expect of it. That is, for <em>validation</em>.</p></li>
+<li><p>To ensure that the result of the computation is what we expect. That is, for <em>ensuring correctness</em>.</p></li>
+</ul>
+<p>It should be obvious that the major limitation of testing is in the limited number of ways we can validate or ensure correct the software under test. We cannot ensure that the software will be have correctly if the particular behavior is untested. In other words, it is unable to ensure that something unexpected will never happen.</p>
+<p>Testing is typically done by executing the software or part of it, and observe the outcome. Validation can be performed by observing that the execution does reach some favorable end points (no exceptions, hangs, etc., unless these are what we test the software for), whereas correctness can be determined by observing that whenever a favorable end state is reached, the computation result matches expectation.</p>
+<h2 id="capture-and-replay">Capture and Replay</h2>
+<p>The following message sequence chart shows a simplification of the interactions among the CLI agent, the SCA server, and the library repository (e.g., Maven central, PyPi, etc.) when the CLI agent scans a repository:</p>
+<figure>
+<img src="https://srcclr.github.io/oct-wave/images/agent-server-interaction.png" alt="" /><figcaption>CLI Agent Interaction with the SCA Server</figcaption>
+</figure>
+<p>The purpose of our system testing is to test the interactions between the SCA system’s components, where it needs to check that the proper interaction is actually performed (validation), and that the content of the interaction is as expected (correctness). The CLI agent is a highly complex software, which limits us into performing black-box testing only. In black-box testing, we check for the outputs of the system under test without considering the implementation details of the system itself. Therefore, when scanning a project implemented in a particular language or build system, we test that <em>the CLI agent sends the correct requests</em> to the SCA server. This is because we consider the requests to be the outputs of the CLI agent. As we can see here, we perform validation by observing that the CLI agent actually sends the requests during its execution, and we ensure correctness by observing that each time the CLI agent sends a request, it sends the <em>correct</em> one.</p>
+<p>Here we need to define what is a correct request. We define a <em>correct</em> request to be a request that matches our record, when the same project was scanned last. Therefore, there is a need to store the requests for a successful run once, for comparison with subsequent runs.</p>
+<p>Not only the requests, we also need to record the responses sent back by the SCA server and the library repository to the CLI agent. These responses are from the previous successful run, so that when the failure occurs in repeat runs, we can isolate the cause to be that of the CLI agent and not due to changes and failures in the remote systems (the SCA server or the library repository).</p>
+<p>The system testing framework thus supports two separate activities:</p>
+<ol type="1">
+<li><p>The <em>capture</em> of the interactions (requests and responses). Here, <code>mitmdump</code> from the <a href="https://mitmproxy.org">mitmproxy</a> suite is used. <code>mitmdump</code> is started with a custom script that logs all requests and responses to JSON files. In this activity, the framework executes the agent and records the agent’s HTTP requests, together with the QA SCA server’s and library repository’s responses. The raw requests and responses are collated into a <em>cassette</em> (so they can later be replayed without actually contacting the servers) and a JSON file containing all requests made.</p></li>
+<li><p>The <em>replay</em> of the interactions (requests and responses) for testing. This is the actual test execution. Here, when the agent sends a request, the request reaches a local proxy (<code>mitmdump</code>), which then forwards it to a local mock server, implemented using <a href="https://sinatrarb.com">Sinatra</a>. The local server then responds to the CLI agent by sending the recorded responses in the cassette back to it, via the proxy. When the CLI sends an evidence query to the server, the framework tests that the query matches the recorded, previously-sent query during the capturing process.</p></li>
+</ol>
+<p>An important thing to remember here is that the agent does not test for the consistency of the responses from the SCA server and the library repository with previously-recorded responses. That is, the previously-recorded responses are only used for replaying the responses of the SCA server and the library repository to the CLI agent. This is because <strong>the test subject is the CLI agent</strong>, and therefore we focus our effort in matching the requests with the recorded requests, since the requests are the outputs of the agent.</p>
+<p>The CLI agent supports scanning projects implemented using a variety of languages and build systems from Java Maven projects to Objective-C with Cocoapods and even C/C++ with <code>make</code>. Due to a large number and variety of tests, the scanned projects are divided into test <em>suites</em> for which currently there are 17. The suites and the functional testing are executed in parallel (whenever CPU resources are available) in the Gitlab CI. The name of the CI test job indicates the kind of repositories that are scanned by the CLI agent for testing. The following shows all the suites as shown by the Gitlab CI web interface, but also including the integration testing job, whose name is <code>functional</code>.</p>
+<figure>
+<img src="https://srcclr.github.io/oct-wave/images/test-jobs.png" alt="" /><figcaption>CLI Agent Test Jobs</figcaption>
+</figure>
+<h2 id="afterthoughts">Afterthoughts</h2>
+<p>System testing for a client/server system has many facets. Here we have discussed several of them, including matching network interactions. At the moment we cannot guarantee that our design has been optimal. Our framework has weaknesses, the most important one is that changes in the environments may cause test failures. For some of the example repositories that we scan, the specified dependency version constraints in the build file can be too weak such that the the replay fails not because of regression, but because dependency version numbers that are detected in new scans do not match the recorded version dependencies. For issues such as these, future improvements can be made, such as having a mock library repository that does not (frequently) update the versions of the libraries it host.</p>
+<h1 id="contract-testing-with-pact">Contract testing with Pact</h1>
+<p>Microservices have been gaining popularity in recent years and it is not surprising why. Unlike the traditional monolithic service architecture, Microservices allow you to build an application as a collection of services, each with a specific purpose. For example, you can have an accounts service which manages user accounts and a payments service which manages user payments. As great as Microservices sound, it is not without shortcomings. Among its biggest issues is testing (which is, in fact, a common problem not specific to Microservices).</p>
+<p>A common and traditional way of testing services is Integration Testing. In Integration Testing, you start all the services that are supposed to work together and run the databases that they are connected to in a clean slate. There’s a lot of setup and teardown involved when running an integration test once. Integration tests are known to be brittle, hard to setup, and take a long time to run. An alternative to Integration Testing is Contract Testing.</p>
+<h2 id="what-is-contract-testing">What is Contract Testing?</h2>
+<p>Contract testing is not a new idea but has been gaining recognition in recent years as Microservices become more popular. The idea is to test the agreements (contracts) between API providers and consumers. The contracts define the structure of the API requests and responses which both sides must adhere to. Contract Testing is “consumer driven” (commonly known as Consumer-driven Contract Testing), i.e. the consumer of the APIs will define the requests it will send and the responses it expects and the Provider validates the contracts.</p>
+<h2 id="contract-testing-in-veracode">Contract Testing in Veracode</h2>
+<p>In Veracode, we run many microservices and use Contract Testing to ensure that both the provider and consumer of APIs are communicating correctly with each other. The library we are using for Contract Testing is <a href="https://docs.pact.io">Pact</a>. We run a self-hosted <a href="https://docs.pact.io/pact_broker">Pact Broker</a> to help us share the contracts between consumers and providers. We trigger contracts verification with Gitlab webhooks. The diagram below shows the flow from when a commit is pushed to the Consumer project to the complete verification of the contracts by the Provider.</p>
+<figure>
+<img src="https://srcclr.github.io/oct-wave/images/pactbroker-gitlab.png" alt="" /><figcaption>Pact Broker - Gitlab Trigger</figcaption>
+</figure>
+<p>The steps that happen can be summarized as: 1. When a commit is pushed to the Consumer service’s repository, the repository’s Gitlab job compiles, runs the tests, and generates the contract files. Contract files are JSON files generated by Pact. The contracts are published to the Pact Broker and the job waits for the verification results using Pact’s command and option <code>pact-broker can-i-deploy</code> (see <a href="https://github.com/pact-foundation/pact_broker-client#can-i-deploy">can-i-deploy</a>). 2. If contracts have changed, Pact Broker triggers a new pipeline on the Provider service to run its tests and validate the latest contracts. 3. Provider service publishes the verification results to Pact Broker. 4. Pact Broker sends the results to the Consumer service. If verification was successful, the job passes and the next job in the pipeline continues. If the verification failed, the job fails and the pipeline will be stopped to prevent a release from going out.</p>
+<h3 id="down-to-the-code-level">Down to the code level</h3>
+<p>Most of our services are written in Java and to use Pact in our projects, we use <code>au.com.dius:pact-jvm-consumer-junit_2.12</code> in our Consumer service projects and <code>au.com.dius:pact-jvm-provider-junit_2.12</code> in our Provider service projects.</p>
+<p>As an example, consider 2 services that we run - ArtifactService, which provides vulnerabilities-related data i.e. the Provider, and InternalAdmin, which is the backend service for an internal tool i.e. the Consumer.</p>
+<h4 id="consumer-defines-the-contract">Consumer defines the contract</h4>
+<p>Define the rule that uses Pact.</p>
+<pre><code>@Rule
+public PactProviderRuleMk2 artifactServiceProvider = new PactProviderRuleMk2(&quot;artifact-service&quot;, this);</code></pre>
+<p>In the unit test, state the Pact to use for verification.</p>
+<pre><code>@PactVerification(fragment = &quot;artifactByIdPact&quot;)
+@Test
+public void getArtifactById() {
+  // tests and assertions for methods that will call the Provider&#39;s API.
+  // ...
+}
+
+@Pact(consumer = &quot;internal-admin&quot;)
+public RequestResponsePact artifactByIdPact(PactDslWithProvider builder) {
+  // Code to convert our data models to PactDsl objects.
+  // PactDsl objects are needed for Pact to generate the contracts.
+  PactDslJsonBody responseBody = ...
+
+  final PactDslResponse pactDslResponse = builder
+      .given(&quot;Artifact with id 1 in database&quot;)
+      .uponReceiving(&quot;Request for artifacts by id=1&quot;)
+      .path(&quot;/1&quot;)
+      .method(&quot;GET&quot;)
+      .willRespondWith()
+      .status(200)
+      .headers(...)
+      .body(responseBody);
+
+  return pactDslResponse.toPact();
+}</code></pre>
+<p>When the tests are being run, for example using <code>mvn test</code>, Pact generates the contracts in a JSON file. In our CI/CD environment, this file will be published to the Pact Broker.</p>
+<h3 id="provider-verifies-the-contract">Provider verifies the contract</h3>
+<p>One interesting thing about Contract Testing with Pact is that you do not have to write any test cases in the Provider service to verify contracts. Provider verify contracts by validating states.</p>
+<h4 id="what-is-a-state">What is a state?</h4>
+<p>As the name suggests, “state” is a condition the Provider is expected to be in when Pact sends a request (generated by Consumer) to test the Provider. This state is essentially the <code>.given(...)</code> method as shown in the Consumer’s unit test codes above. Think of how during integration tests you need to ensure the database is in a clean slate or whether certain environment variables are set correctly. This is a state.</p>
+<p>Run the Provider tests as a Spring Boot Application with PactRunner</p>
+<pre><code>@ContextConfiguration
+@RunWith(PactRunner.class)
+@Provider(&quot;artifact-service&quot;)
+@PactBroker(host = &quot;your pact broker url&quot;, scheme = &quot;https&quot;)
+@SpringBootTest(classes = {ArtifactService.class})
+public class ArtifactServiceProviderContractTest {
+  // These setup are needed for Pact to know which port the application is running on and thus able
+  // to send the requests to.
+  static ConfigurableWebApplicationContext application;
+
+  @BeforeClass
+  public static void start() {
+    application = (ConfigurableWebApplicationContext) SpringApplication.run(ArtifactService.class);
+  }
+
+  @TestTarget
+  public Target target = new HttpTarget(&quot;http&quot;, &quot;localhost&quot;,
+      parseInt(application.getEnvironment().getProperty(&quot;server.port&quot;)));
+}</code></pre>
+<p>Test the state</p>
+<pre><code>@State(&quot;Artifact with id 1 in database&quot;)
+public void testGetArtifactById() {
+  // codes to insert an artifact with the id into database.
+}</code></pre>
+<p>When Pact runs, it initialises the state accordingly and sends the request as defined by the consumer and compares the response generated by the application with the response expected by the Consumer.</p>
+<h2 id="what-we-like-and-dont-like-about-contract-testing">What we like and don’t like about Contract Testing</h2>
+<p>As with all things, Contract Testing has its pros and cons. For us, Contract Testing adds another validation to our tests because we have been using WireMock all the time to run mock servers and generate stub responses in our unit tests. Replacing WireMock with Pact essentially allows us to generate responses in the Consumer project and take it to the Provider for verification. It is also very easy to test the Provider as we just have to initialise the states. However, this also means that the complexity is on the Consumer side as we need to convert our data models to PactDsl objects.</p>
+<p>It also integrates naturally with our engineering workflow as we will always need to merge the changes in the Provider service with the verification before the Consumer’s build job can pass.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Contract Testing has its merits and so far it has worked well for us. Pact is also a relatively new library but already has support for a lot of languages and its libraries have powerful features such as specifying regexes in String properties in contracts. We think that Pact library will continue to improve and Contract Testing will become more convenient and easier to use. If you are using microservices, Contract Testing (and Pact library) is something you should definitely look into.</p>
+<h1 id="proof-pearl-on-the-correctness-of-update-advisor">Proof Pearl: On the Correctness of Update Advisor</h1>
+<h2 id="motivation">Motivation</h2>
+<p>We developed a feature at SourceClear called Update Advisor: a static analysis which determines if a library upgrade would cause breakage when applied to a project.</p>
+<p>To summarize the approach: given two consecutive versions of a library, <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v1" alt="v1" title="v1" /> and <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v2" alt="v2" title="v2" />, and a project that depends on <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v1" alt="v1" title="v1" />, we first compute a <em>semantic</em> diff <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20d" alt="d" title="d" /> between the public APIs of <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v1" alt="v1" title="v1" /> and <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v2" alt="v2" title="v2" />, then check if the project was calling any of the methods changed or removed in <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20d" alt="d" title="d" />; if so, we’d label the upgrade <em>breaking</em>. The diff is <em>semantic</em> in the sense that it takes into account calling relationships.</p>
+<p>We wanted users to be able to run this analysis on every commit in CI/CD. However, it involved building call graphs for arbitrarily complex open source libraries, which could take significant amounts of time and memory – we knew this all too well from the experience of building call graphs for our <a href="https://arxiv.org/abs/1909.00973">vulnerable methods analysis</a>.</p>
+<p>An obvious solution was to precompute these libraries diffs, but what would we store? Real-world libraries can have hundreds of versions, theoretically as many as <a href="https://mvnrepository.com/artifact/com.lihaoyi/ammonite-terminal">one per commit</a>. Seeing as a diff could be requested for any pair of versions in the range, storing <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20O%28n%5E2%29" alt="O(n^2)" title="O(n^2)" /> diffs didn’t seem like a good idea.</p>
+<p>The solution we came up with was to store a linear number of diffs – only those between consecutive pairs of libraries – and <em>compose</em> them on request to derive diffs for arbitrary pairs of versions.</p>
+<h2 id="composing-diffs">Composing Diffs</h2>
+<p>What does it mean to compose diffs?</p>
+<p>Intuitively, given three versions of a library:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb41-1"><a href="#cb41-1"></a><span class="co">// version 1</span></span>
+<span id="cb41-2"><a href="#cb41-2"></a><span class="kw">function</span> <span class="at">a</span>() <span class="op">{</span></span>
+<span id="cb41-3"><a href="#cb41-3"></a>  <span class="cf">return</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb41-4"><a href="#cb41-4"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb42-1"><a href="#cb42-1"></a><span class="co">// version 2</span></span>
+<span id="cb42-2"><a href="#cb42-2"></a><span class="kw">function</span> <span class="at">a</span>() <span class="op">{</span></span>
+<span id="cb42-3"><a href="#cb42-3"></a>  <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb42-4"><a href="#cb42-4"></a><span class="op">}</span></span>
+<span id="cb42-5"><a href="#cb42-5"></a></span>
+<span id="cb42-6"><a href="#cb42-6"></a><span class="kw">function</span> <span class="at">b</span>() <span class="op">{</span></span>
+<span id="cb42-7"><a href="#cb42-7"></a>  <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb42-8"><a href="#cb42-8"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb43-1"><a href="#cb43-1"></a><span class="co">// version 3</span></span>
+<span id="cb43-2"><a href="#cb43-2"></a><span class="kw">function</span> <span class="at">b</span>() <span class="op">{</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a>  <span class="cf">return</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb43-4"><a href="#cb43-4"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Function <code>a</code> was changed across versions 1 and 2, and deleted in version 3.</li>
+<li>Function <code>b</code> was added in version 2 and remained unchanged after.</li>
+</ul>
+<p>The diffs might look like something this:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb44-1"><a href="#cb44-1"></a><span class="co"># diff between version 1 and 2</span></span>
+<span id="cb44-2"><a href="#cb44-2"></a><span class="fu">a</span><span class="kw">:</span><span class="at"> CHANGED</span></span>
+<span id="cb44-3"><a href="#cb44-3"></a><span class="fu">b</span><span class="kw">:</span><span class="at"> ADDED</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb45-1"><a href="#cb45-1"></a><span class="co"># diff between version 2 and 3</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a><span class="fu">a</span><span class="kw">:</span><span class="at"> DELETED</span></span>
+<span id="cb45-3"><a href="#cb45-3"></a><span class="fu">b</span><span class="kw">:</span><span class="at"> UNCHANGED</span></span></code></pre></div>
+<p>Say we’re upgrading a user project from versions <em>1</em> to <em>3</em> directly and need the diff between those. The actual diff is:</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb46-1"><a href="#cb46-1"></a><span class="fu">a</span><span class="kw">:</span><span class="at"> DELETED</span></span>
+<span id="cb46-2"><a href="#cb46-2"></a><span class="fu">b</span><span class="kw">:</span><span class="at"> ADDED</span></span></code></pre></div>
+<p>It seems reasonable that there must be some relationship between the actual diff and the intermediate diffs we saw:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb47-1"><a href="#cb47-1"></a><span class="fu">a</span><span class="kw">:</span><span class="at"> DELETED = compose(CHANGED, DELETED)?</span></span>
+<span id="cb47-2"><a href="#cb47-2"></a><span class="fu">b</span><span class="kw">:</span><span class="at"> ADDED = compose(ADDED, UNCHANGED)?</span></span></code></pre></div>
+<h2 id="a-closer-look">A Closer Look</h2>
+<p>A diff is a set of pairs of an API function and some <em>diff operation</em> which describes how the function changed across versions. We define 5 primitive operations: insertion (I), deletion (D), being changed (C), remaining unchanged (U), and being missing altogether (M).</p>
+<p>Let’s try to figure out the full composition function. There are a few easy ones, but it gets tricky.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode idris"><code class="sourceCode idris"><span id="cb48-1"><a href="#cb48-1"></a><span class="co">-- The two from above</span></span>
+<span id="cb48-2"><a href="#cb48-2"></a>compose <span class="dt">Changed</span> <span class="dt">Deleted</span> <span class="fu">=</span> <span class="dt">Deleted</span></span>
+<span id="cb48-3"><a href="#cb48-3"></a>compose <span class="dt">Inserted</span> <span class="dt">Unchanged</span> <span class="fu">=</span> <span class="dt">Inserted</span></span>
+<span id="cb48-4"><a href="#cb48-4"></a></span>
+<span id="cb48-5"><a href="#cb48-5"></a><span class="co">-- This seems reasonable too: it was a net insertion</span></span>
+<span id="cb48-6"><a href="#cb48-6"></a>compose <span class="dt">Inserted</span> <span class="dt">Changed</span> <span class="fu">=</span> <span class="dt">Inserted</span></span>
+<span id="cb48-7"><a href="#cb48-7"></a></span>
+<span id="cb48-8"><a href="#cb48-8"></a><span class="co">-- Hmm...</span></span>
+<span id="cb48-9"><a href="#cb48-9"></a>compose <span class="dt">Inserted</span> <span class="dt">Deleted</span> <span class="fu">=</span> <span class="dt">Missing</span> or <span class="dt">Unchanged</span><span class="fu">?</span></span>
+<span id="cb48-10"><a href="#cb48-10"></a>compose <span class="dt">Deleted</span> <span class="dt">Inserted</span> <span class="fu">=</span> <span class="dt">Unchanged</span> or <span class="dt">Changed</span><span class="fu">?</span></span>
+<span id="cb48-11"><a href="#cb48-11"></a></span>
+<span id="cb48-12"><a href="#cb48-12"></a><span class="co">-- Huh?</span></span>
+<span id="cb48-13"><a href="#cb48-13"></a>compose <span class="dt">Inserted</span> <span class="dt">Inserted</span> <span class="fu">=</span> <span class="fu">?</span></span></code></pre></div>
+<p>This leads us into what it means for the diff composition function to be <em>correct</em>. A working specification could be that each pair of inputs has an unambiguous result, given justifcation of some kind, and always approximates the actual diff conservatively. The existence of absurd combinations like <code>Inserted</code> and <code>Inserted</code> is another clue that there is some underlying structure to these operations.</p>
+<p>That structure is <em>whether or not the associated API function of each operation is present in the library versions the diff was computed from</em>. Say we have library versions <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v1" alt="v1" title="v1" />, <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v2" alt="v2" title="v2" />, and <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v3" alt="v3" title="v3" />. Given an API function <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20f" alt="f" title="f" /> and that the diff between <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v1" alt="v1" title="v1" /> and <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v2" alt="v2" title="v2" /> has the operation <code>Inserted</code>, <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20f" alt="f" title="f" /> must have been absent from <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v1" alt="v1" title="v1" /> and present in <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v2" alt="v2" title="v2" />. The same argument extends to <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v2" alt="v2" title="v2" /> and <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v3" alt="v3" title="v3" />. Composing the two insertions then makes no sense because <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20f" alt="f" title="f" /> cannot simultaneously be absent and present in <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20v2" alt="v2" title="v2" />. It’s as if <code>Inserted</code> has the type <code>Absent -&gt; Present</code>, which prevents it from being composed with itself.</p>
+<p>With this intuition, we model diff operations as types (in <a href="https://www.idris-lang.org/">Idris</a>, because of its magical ability to finish programs for us). An API function is either absent or present:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode idris"><code class="sourceCode idris"><span id="cb49-1"><a href="#cb49-1"></a><span class="kw">data</span> <span class="dt">State</span> <span class="fu">=</span> <span class="dt">Absent</span> <span class="fu">|</span> <span class="dt">Present</span></span></code></pre></div>
+<p>Diff operations have their corresponding types:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode idris"><code class="sourceCode idris"><span id="cb50-1"><a href="#cb50-1"></a><span class="kw">data</span> <span class="dt">Diff</span> <span class="ot">:</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span></span>
+<span id="cb50-2"><a href="#cb50-2"></a>  <span class="dt">Insert</span> <span class="ot">:</span> <span class="dt">Diff</span> <span class="dt">Absent</span> <span class="dt">Present</span></span>
+<span id="cb50-3"><a href="#cb50-3"></a>  <span class="dt">Change</span> <span class="ot">:</span> <span class="dt">Diff</span> <span class="dt">Present</span> <span class="dt">Present</span></span>
+<span id="cb50-4"><a href="#cb50-4"></a>  <span class="dt">Delete</span> <span class="ot">:</span> <span class="dt">Diff</span> <span class="dt">Present</span> <span class="dt">Absent</span></span>
+<span id="cb50-5"><a href="#cb50-5"></a>  <span class="dt">Unchanged</span> <span class="ot">:</span> <span class="dt">Diff</span> <span class="dt">Present</span> <span class="dt">Present</span></span>
+<span id="cb50-6"><a href="#cb50-6"></a>  <span class="dt">Missing</span> <span class="ot">:</span> <span class="dt">Diff</span> <span class="dt">Absent</span> <span class="dt">Absent</span></span></code></pre></div>
+<p>The composition has a familiar type:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode idris"><code class="sourceCode idris"><span id="cb51-1"><a href="#cb51-1"></a><span class="fu">compose</span> <span class="ot">:</span> <span class="dt">Diff</span> a b <span class="ot">-&gt;</span> <span class="dt">Diff</span> b c <span class="ot">-&gt;</span> <span class="dt">Diff</span> a c</span></code></pre></div>
+<p>Case-splitting on <code>compose</code> and methodically using <a href="http://docs.idris-lang.org/en/latest/tutorial/interactive.html#proofsearch">Idris’ proof search</a> reveals that there is an unambiguous answer for most cases; furthermore, invalid cases do not even have to be represented, and Idris allows us to leave them out.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode idris"><code class="sourceCode idris"><span id="cb52-1"><a href="#cb52-1"></a>compose <span class="dt">Inserted</span> <span class="dt">Changed</span> <span class="fu">=</span> <span class="dt">Inserted</span></span>
+<span id="cb52-2"><a href="#cb52-2"></a>compose <span class="dt">Inserted</span> <span class="dt">Deleted</span> <span class="fu">=</span> <span class="dt">Missing</span></span>
+<span id="cb52-3"><a href="#cb52-3"></a>compose <span class="dt">Inserted</span> <span class="dt">Unchanged</span> <span class="fu">=</span> <span class="dt">Inserted</span></span>
+<span id="cb52-4"><a href="#cb52-4"></a>compose <span class="dt">Changed</span> <span class="dt">Deleted</span> <span class="fu">=</span> <span class="dt">Deleted</span></span>
+<span id="cb52-5"><a href="#cb52-5"></a>compose <span class="dt">Deleted</span> <span class="dt">Missing</span> <span class="fu">=</span> <span class="dt">Deleted</span></span>
+<span id="cb52-6"><a href="#cb52-6"></a>compose <span class="dt">Unchanged</span> <span class="dt">Deleted</span> <span class="fu">=</span> <span class="dt">Deleted</span></span>
+<span id="cb52-7"><a href="#cb52-7"></a>compose <span class="dt">Missing</span> <span class="dt">Inserted</span> <span class="fu">=</span> <span class="dt">Inserted</span></span>
+<span id="cb52-8"><a href="#cb52-8"></a>compose <span class="dt">Missing</span> <span class="dt">Missing</span> <span class="fu">=</span> <span class="dt">Missing</span></span></code></pre></div>
+<p>The only cases which aren’t unambiguous are those involving <code>Changed</code> or <code>Unchanged</code>, because they have the <a href="https://github.com/quchen/articles/blob/master/algebraic-blindness.md">same type</a>. As this is a static analysis, we err on the side of caution and pick the more conservative answer – whenever possible, assume something is changed. We could formalize this further with a lattice, but seeing as there as there are only five cases left…</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode idris"><code class="sourceCode idris"><span id="cb53-1"><a href="#cb53-1"></a>compose <span class="dt">Changed</span> <span class="dt">Changed</span> <span class="fu">=</span> <span class="dt">Changed</span> <span class="co">-- only thing that makes sense</span></span>
+<span id="cb53-2"><a href="#cb53-2"></a>compose <span class="dt">Changed</span> <span class="dt">Unchanged</span> <span class="fu">=</span> <span class="dt">Changed</span> <span class="co">-- more conservative</span></span>
+<span id="cb53-3"><a href="#cb53-3"></a>compose <span class="dt">Deleted</span> <span class="dt">Inserted</span> <span class="fu">=</span> <span class="dt">Changed</span> <span class="co">-- more conservative</span></span>
+<span id="cb53-4"><a href="#cb53-4"></a>compose <span class="dt">Unchanged</span> <span class="dt">Changed</span> <span class="fu">=</span> <span class="dt">Changed</span> <span class="co">-- more conservative</span></span>
+<span id="cb53-5"><a href="#cb53-5"></a>compose <span class="dt">Unchanged</span> <span class="dt">Unchanged</span> <span class="fu">=</span> <span class="dt">Unchanged</span> <span class="co">-- only thing that makes sense</span></span></code></pre></div>
+<p>This gives us the following table:</p>
+<div style="width: 25%; margin: 0 auto;">
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>I</th>
+<th>C</th>
+<th>D</th>
+<th>U</th>
+<th>M</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>I</strong></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td>I</td>
+<td>M</td>
+<td>I</td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+</tr>
+<tr class="even">
+<td><strong>C</strong></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td>C</td>
+<td>D</td>
+<td>C</td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+</tr>
+<tr class="odd">
+<td><strong>D</strong></td>
+<td>C</td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td>D</td>
+</tr>
+<tr class="even">
+<td><strong>U</strong></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td>C</td>
+<td>D</td>
+<td>U</td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+</tr>
+<tr class="odd">
+<td><strong>M</strong></td>
+<td>I</td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td>M</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We are also in a better position now to think about our earlier definitions:</p>
+<p><strong>Why not express C in terms of I and D?</strong> So we don’t lose information. For example, if a function is deleted and later inserted, we want to be able to express that it might have changed.</p>
+<p><strong>Why distinguish U and M?</strong> U and M operate on functions with different state.</p>
+<p>Composition is not symmetric:</p>
+<pre><code>I . D = M
+D . I = C</code></pre>
+<p>However, it is associative (proven by exhaustion).</p>
+<h2 id="conflating-u-and-m">Conflating U and M</h2>
+<p>It turns out that we can conflate U and M into a single operation, <em>unknown</em> (?), since they occur in mutually exclusive scenarios. This is useful in practice because when we compute diffs, we want to store just the changes instead of also keeping track of everything that remained unchanged. Also, this doesn’t change composition semantics (proven by exhaustion).</p>
+<p>Implementing this change gives us the following table.</p>
+<div style="width: 25%; margin: 0 auto;">
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>I</th>
+<th>C</th>
+<th>D</th>
+<th>?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>I</strong></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td>I</td>
+<td>?</td>
+<td>I</td>
+</tr>
+<tr class="even">
+<td><strong>C</strong></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td>C</td>
+<td>D</td>
+<td>C</td>
+</tr>
+<tr class="odd">
+<td><strong>D</strong></td>
+<td>C</td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cbot" alt="\bot" title="\bot" /></td>
+<td>D</td>
+</tr>
+<tr class="even">
+<td><strong>?</strong></td>
+<td>I</td>
+<td>C</td>
+<td>D</td>
+<td>?</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>More details are available in our <a href="https://asankhaya.github.io/pdf/Efficient-Static-Checking-of-Library-Updates.pdf">FSE2018 paper</a>.</p>
+<h2 id="final-thoughts">Final Thoughts</h2>
+<p>What does it mean for a function to be <a href="https://en.wikipedia.org/wiki/Correctness_(computer_science)">correct</a>? Correctness only makes sense in the presence of a specification; here ours was that composition was umambiguous, or that the results were at least justifiable, and would always conservatively approximate the actual diff. I’d say we achieved that here, to the end of gaining more confidence that we could build Update Advisor on the idea of diff composition.</p>
+<p>The use of formal methods on day-to-day software problems is still costly enough nowadays that it is not mainstream, and often not as readily applicable as simply writing more (types of) tests, as we have done in the earlier parts of this book. Nevertheless, tools like TLA+, Alloy, or even proof assistants and dependently-typed languages like Coq and Idris are essential additions to one’s toolbox; they are useful when the kernel of a problem can be distilled and formalized, so we can be sure the software built atop it has robust foundations.</p>
+<h1 id="dynamic-symbolic-execution-with-pathgrind">Dynamic Symbolic Execution with Pathgrind</h1>
+<p>In this article, we will learn about the technique of <em>dynamic symbolic execution</em> and how it can be used for testing and fuzzing binaries. In two previous articles (<a href="/blog/automated-unit-test-generation-for-java/">1</a>,<a href="/blog/property-based-testing-for-java/">2</a>), we already saw how automated methods can be used for test case generation in Java. Dynamic symbolic execution is an automated approach to generating new test cases based on constraints that are collected from an execution trace. For this article, we will use the <a href="https://github.com/codelion/pathgrind">Pathgrind</a> tool. Pathgrind is a symbolic execution engine which can be used for automated fuzzing of 32-bit binaries on Linux. Before we jump in, let us first start with some background about symbolic execution.</p>
+<p><strong>Symbolic Execution</strong></p>
+<p>Wikipedia defines <a href="http://en.wikipedia.org/wiki/Symbolic_execution">symbolic execution</a> as “the means of analyzing a program to determine what inputs cause each part of the program to execute”. The basic idea behind symbolic execution can be explained by the following steps:</p>
+<ul>
+<li>Execute the program with a given input</li>
+<li>Build a symbolic formula during execution which captures the path taken by the input through the program</li>
+<li>Minimally change the formula to create a new formula</li>
+<li>Solve the new formula to generate another input to the program</li>
+<li>Repeat the steps by executing the program with the new input</li>
+</ul>
+<p>As an example, let us consider the following <code>max</code> method.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb55-1"><a href="#cb55-1"></a><span class="dt">int</span> max (<span class="dt">int</span> x, <span class="dt">int</span> y, <span class="dt">int</span> z) {</span>
+<span id="cb55-2"><a href="#cb55-2"></a>  <span class="dt">int</span> m = x;</span>
+<span id="cb55-3"><a href="#cb55-3"></a>  <span class="cf">if</span>(y&gt;m &amp;&amp; y&gt;z)</span>
+<span id="cb55-4"><a href="#cb55-4"></a>    m = y;</span>
+<span id="cb55-5"><a href="#cb55-5"></a>  <span class="cf">else</span> <span class="cf">if</span>(z&gt;m)</span>
+<span id="cb55-6"><a href="#cb55-6"></a>    m = z;</span>
+<span id="cb55-7"><a href="#cb55-7"></a>  <span class="cf">return</span> m;</span>
+<span id="cb55-8"><a href="#cb55-8"></a>}</span></code></pre></div>
+<p>The method takes as input, three integer values and returns the maximum value among the three. So, calling the method with the input <code>max(1,3,2)</code> return 3 as the maximum value. While executing the method we can build the following symbolic formula which captures the path taken by the input through the program. This symbolic formula is also referred to as the path condition (PC).</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb56-1"><a href="#cb56-1"></a>  Statement                    Formula</span>
+<span id="cb56-2"><a href="#cb56-2"></a>  inputs : x0, y0, z0</span>
+<span id="cb56-3"><a href="#cb56-3"></a>  <span class="dt">int</span> m = x;                   true</span>
+<span id="cb56-4"><a href="#cb56-4"></a>  <span class="cf">if</span>(y&gt;m &amp;&amp; y&gt;z)               m0 = x0</span>
+<span id="cb56-5"><a href="#cb56-5"></a>    m = y;                     m0 = x0 /\ y0 &gt; m0 /\ y0 &gt; z0</span>
+<span id="cb56-6"><a href="#cb56-6"></a>  <span class="cf">else</span> <span class="cf">if</span>(z&gt;m)                 m0 = x0 /\ y0 &gt; m0 /\ y0 &gt; z0 /\ m1 = y0</span>
+<span id="cb56-7"><a href="#cb56-7"></a>    m = z;</span>
+<span id="cb56-8"><a href="#cb56-8"></a>  <span class="cf">return</span> m;                    output: m1</span></code></pre></div>
+<p>In the beginning, the execution starts with the symbolic formula <code>true</code> and then continuing for each statement in the program we add a constraint to the formula. Thus, the path condition for the given input (1,3,2) is <code>m0 = x0 /\ y0 &gt; m0 /\ y0 &gt; z0 /\ m1 = y0</code>. After eliminating <code>m0</code> and substituting the value of <code>m1</code> in the formula we get <code>y0 &gt; x0 /\ y0 &gt; z0 /\ 3 = y0</code>. This formula captures the path taken by the program for the given input. Now, in order to mutate the formula there are several possibilities: we can negate a particular constraint in the conjunction or we can drop a constraint from the conjunction altogether. For this example let us just negate the first constraint. We get an another formula <code>y0 &lt;= x0 /\ y0 &gt; z0 /\ 3 = y0</code>, and we need to check if this formula is satisfiable. This can be done using a number of existing constraint solvers (like <a href="https://sites.google.com/site/stpfastprover/">STP</a>) or <a href="http://en.wikipedia.org/wiki/Satisfiability_modulo_theories">SMT</a> solvers (like <a href="http://z3.codeplex.com/">z3</a>). The solver tells if the formula is unsatisfiable, or in case the formula is satisfiable it returns the values of the variables in the formula that make the formula valid. For our new path condition <code>y0 &lt;= x0 /\ y0 &gt; z0 /\ 3 = y0</code>, the solver gives the following values for variables <code>x0</code>,<code>y0</code> and <code>z0</code>.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode java"><code class="sourceCode java"><span id="cb57-1"><a href="#cb57-1"></a>x0 = <span class="dv">3</span></span>
+<span id="cb57-2"><a href="#cb57-2"></a>y0 = <span class="dv">2</span></span>
+<span id="cb57-3"><a href="#cb57-3"></a>z0 = <span class="dv">2</span></span></code></pre></div>
+<p>We can now repeat the same process with these new inputs and carry on the symbolic execution of the program one path at a time. This kind of symbolic path exploration can be visualized with the following execution tree for the <code>max</code> method.</p>
+<figure>
+<img src="images/ExecutionTree.png" alt="" /><figcaption>Execution Tree for max method</figcaption>
+</figure>
+<p>Each input that is discovered leads to covering of another subsequent path in the tree. In this case, there are only 3 distinct paths in the program, so just 3 path conditions are required to explore all the paths in the program. For methods without loops or recursion the path exploration is always finite and terminating. However, in general in the presence of loops and recursion a program may potentially have unbounded number of paths. Exploring a program by exhaustively testing all paths in the program can lead to exponential number of test cases. This problem is commonly referred as path explosion, and is one of the limitations of symbolic execution. In order address this limitation, most tools support setting up a fixed depth until which the execution tree is explored and the path exploration process terminates after that depth. A similar strategy is used in pathgrind which we will look at in the next section.</p>
+<p><strong>Pathgrind</strong></p>
+<p><a href="https://github.com/codelion/pathgrind">Pathgrind</a> is a symbolic execution engine based on Valgrind that uses STP for solving constraints. It can be used to fuzz 32-bit binaries on Linux. The installation is fairly simple and detailed in the <a href="https://github.com/codelion/pathgrind/blob/master/README.md"><code>README.md</code></a> file on GitHub. Once installed, you need to edit the <code>settings.cfg</code> file to include the following for each program you want to fuzz.</p>
+<pre><code>[test]
+prog      = testcase/test.exe
+input     = input.txt
+max_bound   = 100</code></pre>
+<p>The <code>prog</code> parameter specifies the path to the binary and the <code>input</code> parameter gives the file to use for the initial input to start the symbolic execution. It also has an optional <code>max_bound</code> parameter to bound the search during path exploration. By default, pathgrind assumes that the program takes input from a file and generates new files based on symbolic execution to fuzz the program. Once the settings are configured we can just call <code>fuzz.py test</code> to run pathgrind on input configured with <code>test</code> section in the <code>settings.cfg</code> file.</p>
+<pre><code>user@user-VM:~/git/pathgrind$ ./fuzz/fuzz.py test
+[+] expanding execution with file input.txt
+    * 4 path constraints (bound: 0)
+    * solving constraints [0:0]
+    * new_input (1.txt): bood
+    * solving constraints [0:1]
+    * new_input (2.txt): .aod
+    * solving constraints [0:2]
+    * new_input (3.txt): ..dd
+    * solving constraints [0:3]
+    * new_input (4.txt): ...!
+[+] checking each new input
+    1.txt[-] argument to program is
+    2.txt[-] argument to program is
+    3.txt[-] argument to program is
+    4.txt[-] argument to program is
+[+] scoring each new input
+[+] expanding execution with file 4.txt
+    * 4 path constraints (bound: 4)
+...
+Paths Explored: 15
+Time Taken: 10.85</code></pre>
+<p>The output of running pathgrind is shown above. The execution starts with file <code>input.txt</code> and new inputs (<code>1.txt, 2.txt etc.</code>) are generated by solving the path conditions (constraints). At the end, it also prints the number of paths explored and the total time taken. While fuzzing, pathgrind generates inputs and executes the binary with those inputs in the hope that one of the input will lead to a memory error and a crash that is detected by valgrind. The crash can be further investigated using the output from valgrind to determine the exploitability of the issue. Thus, new bugs or vulnerabilities in the binary can be found in a fully automated manner.</p>
+<p>For the simple test program the fuzzing process terminates in a few seconds, but for more realistic programs of interest like a browser (or the libPNG library) the process can take hours or even days to find some interesting case of failure. This is primarily due to problem of path explosion as mentioned earlier. If we want to see the time taken to execute each path condition we need to install <a href="http://bokeh.pydata.org/en/latest/">bokeh</a> a Python-based framework for data visualization and just use <code>plotfuzz.py test</code>. It will launch the browser and show a running plot of the time taken to solve each formula and the time taken for path exploration (generating new formula).</p>
+<figure>
+<img src="images/PathExplosion.png" alt="" /><figcaption>Path Exploration Time Taken</figcaption>
+</figure>
+<p>The green line is the time taken in solving the constraint while the blue line shows the time taken in generating new constraints. As is clear from the graph, the time taken to generate new constraints is much larger than the time taken by the external solver (in this case STP) to solve them. I gave a talk on “Visualizing Symbolic Execution with Bokeh” at <a href="https://twitter.com/pydatasg">PyData Singapore</a> earlier this year on this topic. The <a href="http://asankhaya.github.io/ppt/PyDataSing.pptx">slides</a> of the presentation contain more examples on how to visualize some of the issues with path explosion in symbolic execution. For instance, if we implement the path exploration of loops in a naive way we will have lots of paths which are similar to each other that represent the unwinding of the loop. The following scatter plot shows what this looks like.</p>
+<figure>
+<img src="images/PathSimilarity.png" alt="" /><figcaption>Path Similarity</figcaption>
+</figure>
+<p>The size of the dot in the plot depicts the similarity (larger is more similar). All the dots from number 1 to 40 are very similar to each other and represent paths that are not interesting as they come by exploring loop unwinding. Techniques to address such limitations of symbolic execution are beyond the scope of this article and are a topic of active research in this area. With that we have come to the end of this article, more details about how to optimize path exploration with pathgrind can be found in the paper on <a href="http://asankhaya.github.io/research.html#EUB">Exploiting undefined behaviors for efficient symbolic execution</a>. In addition, to learn more about the path conditions, differences between various symbolic execution engines and solvers you can check out the following paper on <a href="http://arxiv.org/abs/1302.4798">An Empirical Study of Path Feasibility Queries</a>. If you run into any issues running Pathgrind feel free to submit an issue on the <a href="https://github.com/codelion/pathgrind">GitHub repo</a> or send in your pull request.</p>
+<h1 id="efda-a-benchmark-for-software-composition-analysis-tools">EFDA: a benchmark for software composition analysis tools</h1>
+<p>At SourceClear, we build tools that help customers detect and manage security vulnerabilities in the open source libraries they use. We constantly ask ourselves this question, “What makes a good OSS management tool?” At the end of the day, we believe, it comes down to data. Up-to-date and reliable data. If your project is using the the latest version of Library A which was published 1 day ago, the tool must be able to detect it. If Library A has 3 CVEs, the tool must be able to inform you of that, at least. If the library has vulnerabilities that are not published to the CVE database yet, can the tool find them?</p>
+<p>At SourceClear, we believe data is king. However, even before those data can be retrieved, an OSS management tool must be able to scan the project. Over these years, we have encountered different kinds of project setups that could cause an OSS management tool to fail. The tool might fail to scan the project completely or report a dependency version that is different from what the package manager actually resolves to. Because of this, we created various sample projects to keep track of the languages, package managers, and project setups that our Lightman Scanner supports.</p>
+<h2 id="open-sourcing-efda">Open-Sourcing EFDA</h2>
+<p>Today, we are releasing a collection of sample projects as a single open source project called Evaluation Framework for Dependency Analysis (EFDA). The code repo can be found here. This repository will be managed by the Continuous-Security Security project which we will be announcing in a few weeks. In this repository, you will find projects implemented in various languages and with different setups that aim to test the features of an OSS management tool. The projects contain details such as the number of dependencies, whether they are direct or transitive dependencies, and the number of vulnerabilities present. In this repository, you will also find a spreadsheet that lists the features being tested. This spreadsheet allows you to customize the importance of the features and compute a score to determine how well an OSS management tool fits your needs.</p>
+<figure>
+<img src="https://srcclr.github.io/oct-wave/images/efda-spreadsheet.png" alt="" /><figcaption>EFDA Spreadsheet</figcaption>
+</figure>
+<h2 id="our-guiding-principles">Our Guiding Principles</h2>
+<p>When we set up these example projects, we followed a set of guiding principles.</p>
+<h3 id="the-basic-set-of-test-cases">The basic set of test cases</h3>
+<p>If we are checking whether a tool supports a particular package manager, what is the minimal set of features we need to test for us to say “yes, this tool supports this package manager reasonably”? Take for example, npm projects. Projects using npm declare their dependencies in package.json. It is common for users of npm to declare version ranges in package.json instead of sticking to a specific version. Another common setup is to separate dependencies into production and development dependencies. How about npm-shrinkwrap.json which helps to lock dependencies’ versions? As such, you can find in the npm folder project setups that test each scenario specifically. The same guiding principle is applied when we create example projects for other languages/package managers.</p>
+<h3 id="independent-self-contained-test-cases">Independent, self-contained test cases</h3>
+<p>Of course, in a real-world scenario we would expect a project to use more than one feature from its package manager. But we want to make the evaluation process simpler and debugging easier. Each project setup tests one scenario specifically. If a tool fails to report the expected number of dependencies or vulnerabilities for the project, we can safely say that it does not support the feature well enough without digging deeper to find out exactly which feature of the package manager is breaking the tool’s analysis process.</p>
+<h3 id="breadth-and-depth-of-coverage">Breadth and depth of coverage</h3>
+<p>There are 2 methods to evaluate a dependency analysis tool. The first method is to look at how many package managers it supports - the breadth of its coverage. The second method is to look at how well it supports each package manager - the depth of its coverage. EFDA checks both the breadth and depth of coverage. This is why at the time of this writing, it has projects implemented in 8 programming languages, 15 package managers, and many more various setups for those package managers.</p>
+<h3 id="configurable-weightage-of-features">Configurable weightage of features</h3>
+<p>Some features may be important to a group of users but not to another group. Some users may not even care if a particular language/package manager is being supported if they are not using them. In the spreadsheet that accompanies the EFDA repository, users can customize the importance (0-5) of each feature. A final score will be computed based on the importance given to each feature.</p>
+<h2 id="contributions">Contributions</h2>
+<p>Our goal for releasing this repository is to help everyone who are using open source libraries decide which tool is most suitable for them. You can help make the project better and more comprehensive by adding project setups that are missing in the repository. We look forward to your contributions and comments!</p>
+<h1 id="e2e-with-cypress">E2E with Cypress</h1>
+<p>Cypress is an end-to-end JavaScript testing framework for writing and automating UI tests. As of this writing, it runs in Canary, Chrome, Chromium and the Electron browser.</p>
+<h2 id="why-cypress">Why Cypress?</h2>
+<h3 id="developer-friendliness">Developer Friendliness</h3>
+<p>Frontend engineers are increasingly becoming more involved in writing integration tests — a shift from previous practices where only QA engineers design and implement test strategies. This means frontend engineers will benefit from testing tools that are specifically designed for their workflow. Cypress fits our frontend engineers’ workflow for two reasons: Its debuggability, and its expressiveness.</p>
+<h4 id="debuggability">Debuggability</h4>
+<p>Being able to run inside the browser means our tests run in the same loop as our application. This translates to better debug-ability. Cypress provides <code>debug()</code> and a way of handling <code>debugger</code> command and allows us to inspect with browser dev tools. Consider the following simple example:</p>
+<figure>
+<img src="https://srcclr.github.io/oct-wave/images/cypress-screenshot.png" alt="" /><figcaption>Cypress</figcaption>
+</figure>
+<p>We want a tab containing the text “Released” to be selected when a variable <code>releaseStatus</code> is set to <code>RELEASED</code>. Cypress lets us walk through the different commands and assertions and allows us to “time travel” to see how the interface looks like including how the markups and styles are rendered at certain points in time. Clicking on the <code>FIND</code> command as shown the previous screenshot yields the following in the devtools console:</p>
+<figure>
+<img src="https://srcclr.github.io/oct-wave/images/cypress-in-console.png" alt="" /><figcaption>Cypress-in-Console</figcaption>
+</figure>
+<p>This level of control and transparency surfaces significant information for our engineers when evaluating our tests which prove to be handy in implementing or addressing issues. Cypress also provides tools to easily trace where the test fails such as automatic screenshot or video recording.</p>
+<h4 id="expressiveness">Expressiveness</h4>
+<p>Using test frameworks and assertion libraries with APIs that are expressive improves the maintainability of any form of tests. Cypress provides descriptive APIs and its support for Behavior Driven Development <code>BDD</code> and Test Driven Development <code>TDD</code> assertion styles makes writing tests more expressive and intent-revealing.</p>
+<p>In the following example, we can easily follow and understand the flow being tested — we visit <code>http://localhost:3000</code> , attempt to login with email and password. Then, URL in the address bar should include a <code>session</code> parameter.</p>
+<pre><code>it(&#39;logs in&#39;,()=&gt;{
+    cy.visit(&#39;http://localhost:3000&#39;);
+
+    cy.get(&#39;form&#39;)
+        .find(&#39;[type=&quot;email&quot;]&#39;)
+        .type(&#39;my@email.com&#39;);
+
+    cy.get(&#39;form&#39;)
+        .find(&#39;[type=&quot;password&quot;]&#39;)
+        .type(&#39;my-safe-password&#39;);
+
+    cy.get(&#39;form&#39;).submit();
+    cy.url().should(&#39;include&#39;,&#39;session&#39;);
+});</code></pre>
+<p>In other test frameworks, we might find convoluted sequence of commands or less expressive APIs just so we could achieve the flow above. This is particularly true in cases where additional lines are needed in order to handle waits/sleep with arbitrary numbers.</p>
+<h3 id="less-flakiness">Less Flakiness</h3>
+<p>As with any modern web apps, many interactions are implemented to be asynchronous (async). In general, async API calls augment user experience as it provides better feedback about the UI state. However, with async requests, possibility of high latency and slow browser rendering, end-to-end tests tend to yield non-deterministic or flaky results. Flaky tests are tests that pass or fail at different runs. For instance, a test passes under normal conditions but fails when an expected DOM element did not appear in time due to delays in rendering or slow network.</p>
+<p>We address flaky tests with Cypress’ built-in wait and retry-ability that come by defaul. Let’s take a look at the following:</p>
+<pre><code>it(&#39;should select Libraries tab by default&#39;,()=&gt;{
+    cy.visit(&#39;http://localhost:3000/items&#39;); 
+
+    cy.get(&#39;[data-test-id=&quot;tabs-list&quot;]&#39;) 
+        .find(&#39;[aria-selected=&quot;true&quot;]&#39;)
+        .contains(&#39;Libraries&#39;); 
+});</code></pre>
+<p>In the example above, we want to test that when a user logs into <code>/items</code>, the tab named <code>Libraries</code> is selected by default. Here, we need not explicitly call <code>wait</code> right after the <code>.visit</code> command just so we can be sure that the DOM is fully loaded when we perform a <code>.get</code> or <code>.find</code>. By default, these commands <code>wait</code> and retry to resolve before moving to the next command or assertion. In this case, <code>.visit('http://localhost:3000/items');</code> does not resolve until all resources (JS, CSS and HTML) have been fully downloaded; And <code>get('[data-test-id="tabs-list"]’)</code> will keep retrying until the element with attribute-value pair <code>data-test-id="tabs-list”</code> eventually exists in the DOM. In Selenium webdriver, similar effect may be achieved with its <code>wait</code> and <code>until</code>APIs. For example, <code>driver.wait(until.elementLocated(By.css(‘.tabList’)));</code> . With <code>FluentWait</code>, timeout and polling frequency can also produce the automatic retries. With wait and retry happening by default and wrapped by simple functions, we do not need to explicitly call them.</p>
+<h2 id="organizing-tests">Organizing tests</h2>
+<p>One defining trait that separates Cypress from other end-to-end test frameworks is its familiarity to frontend engineers being a JavaScript only test framework. This enables us to easily participate and incorporate end-to-end testing into our workflow. To further encourage more testing in our team, we organize our application such that Cypress is installed in the same repo as the web application being tested as opposed to the alternative of running it from another repo or service. This lets end-to-end tests to be managed better within the web application’s context where they are written.</p>
+<h3 id="spec-files">Spec Files</h3>
+<p>We consider each page or view as one test spec and logical grouping of feature test cases. For instance, login and search pages have their own spec files. There are cases where tests from different specs rely on shared functions. Some examples are the auth functions which we want to happen before running tests for login/role-based views or pages. In such cases, we place those shared functions in Cypress <code>support/commands.js</code>.</p>
+<h3 id="selectors">Selectors</h3>
+<p>When writing tests, we augment our JSX markups with the attribute <code>data-test-id</code>. In our code example in the previous section, you find <code>data-test-id="tabs-list"</code> as the selector to get an element. It is ideal not to use <code>class</code> or <code>id</code> property when finding elements because these properties may change as requirements change. For instance, at one point the application uses Block-Element-Modifier CSS naming style where it uses <code>&lt;div className="tab"&gt;...</code>, but a new feature that allows new themes to inverse the style would then need the same element to use <code>tab--inverse</code>. Consequently, tests become brittle as they require change with <code>class</code> property changes. Using <code>data-test-id</code> or any reasonable <code>data-*</code> ensures that our tests are decoupled from element properties that may change.</p>
+<h3 id="running-in-the-pipeline">Running in the pipeline</h3>
+<p>In our CI we set up Cypress to run headlessly. In our Gitlab’s <code>.yaml</code> file, we first run a stage to perform the initial <code>npm install</code> which is then followed by the <code>npm run test-e2e</code>. Running <code>test-e2e</code> starts the server using <code>start-server-and-test</code> library which waits for the server to successfully run first before executing the tests. When deploying to production, we simply instruct our bundler to remove the test attributes <code>data-test-id</code> from our <code>JSX</code> markups in our builds.</p>
+</body>
+</html>
